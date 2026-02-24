@@ -1,0 +1,1 @@
+Aymeric Hostyn, hostynaymeric-svg
