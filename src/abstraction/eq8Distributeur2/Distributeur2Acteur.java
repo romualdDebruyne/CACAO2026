@@ -12,12 +12,12 @@ import abstraction.eqXRomu.produits.IProduit;
 
 public class Distributeur2Acteur implements IActeur {
 	
-	protected Journal journal;
+	protected Journal journal0;
 
 	protected int cryptogramme;
 
 	public Distributeur2Acteur() {
-		this.journal = new Journal("Journal ", this);
+		this.journal0 = new Journal("Journal numéro étape ", this);
 	}
 	
 	public void initialiser() {
@@ -36,7 +36,7 @@ public class Distributeur2Acteur implements IActeur {
 	////////////////////////////////////////////////////////
 
 	public void next() {
-		this.journal.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
+		this.journal0.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -62,6 +62,7 @@ public class Distributeur2Acteur implements IActeur {
 	// Renvoie les journaux
 	public List<Journal> getJournaux() {
 		List<Journal> res=new ArrayList<Journal>();
+		res.add(this.journal0);
 		return res;
 	}
 
