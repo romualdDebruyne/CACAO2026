@@ -13,11 +13,14 @@ import abstraction.eqXRomu.produits.IProduit;
 public class Distributeur2Acteur implements IActeur {
 	
 	protected Journal journal0;
-
+	protected Variable volumeStock;
+	protected Variable RayonHauteGamme;
 	protected int cryptogramme;
 
 	public Distributeur2Acteur() {
-		this.journal0 = new Journal("Journal numéro étape ", this);
+		this.journal0 = new Journal("Journal Eq 8 numéro étape ", this);
+		this.volumeStock=new Variable("volumeStock", this);
+		this.RayonHauteGamme = new Variable("RayonHauteGamme",this);
 	}
 	
 	public void initialiser() {
@@ -37,6 +40,7 @@ public class Distributeur2Acteur implements IActeur {
 
 	public void next() {
 		this.journal0.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
+		this.RayonHauteGamme.ajouter(this,100);
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -50,6 +54,8 @@ public class Distributeur2Acteur implements IActeur {
 	// Renvoie les indicateurs
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
+		res.add(volumeStock);
+		res.add(RayonHauteGamme);
 		return res;
 	}
 
