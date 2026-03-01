@@ -16,6 +16,7 @@ import abstraction.eqXRomu.produits.IProduit;
 public class Producteur3Acteur implements IActeur {
 	protected Journal journal_periode;
 	protected Journal journal_stock_periode;
+	protected Journal journal_des_ventes_en_bourses;
 	protected int periode_act ;
 	protected int cryptogramme;
 	protected HashMap<Feve,Variable> stock;
@@ -25,6 +26,7 @@ public class Producteur3Acteur implements IActeur {
 		this.journal_periode = new Journal("Journal des périodes"+this.getNom(), this);
 		this.journal_stock_periode= new Journal ("Journal du stock restant par période"+this.getNom(),this);
 		this.periode_act=0;
+		this.journal_des_ventes_en_bourses=new Journal ("Journal des ventes en bourse"+this.getNom(),this);
 		this.stock = new HashMap<Feve, Variable>();
 		for (Feve f : Feve.values()) {
     		this.stock.put(f, new VariableReadOnly(this + " Stock " + f, this, 0.0));
@@ -48,7 +50,16 @@ public class Producteur3Acteur implements IActeur {
 	////////////////////////////////////////////////////////
 
 	public void next() {
+		// défi 1 
 		this.journal_periode.ajouter("période : "+ this.periode_act);
+		//défi 3 
+		double quantite= 120.0;
+		Feve feve = Feve.F_MQ;
+		if(this.stock.get(feve).getValeur()>=quantite){
+			this.stock.get(feve).retirer(this, quantite, cryptogramme);
+			this.journal_des_ventes_en_bourses.ajouter("vente en bourse de "+ quantite+" tonnes de "+ feve.getGamme());
+		}
+		//défi 2
 		double totalStock=0.0;
 		for (Feve f : Feve.values()) {
 			totalStock+=this.stock.get(f).getValeur();
