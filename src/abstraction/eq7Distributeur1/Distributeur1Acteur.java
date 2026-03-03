@@ -9,13 +9,20 @@ import abstraction.eqXRomu.filiere.IActeur;
 import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.IProduit;
+import abstraction.eqXRomu.produits.Feve;
+import abstraction.eqXRomu.bourseCacao.IAcheteurBourse;
 
-public class Distributeur1Acteur implements IActeur {
+public class Distributeur1Acteur implements IActeur, IAcheteurBourse {
 	
 	protected int cryptogramme;
 	private Journal journal;
+	// indicateur de volume total en stock
+	private Variable indicateurStockTotal;
+	// valeur courante du stock (toutes productions confondues)
+	private double stockTotal = 0.0;
 	public Distributeur1Acteur() {
 		this.journal=new Journal("Journal equipe 7",this);
+		this.indicateurStockTotal = new Variable("Stock total (t)", this, stockTotal);
 	}
 	
 	public void initialiser() {
@@ -36,6 +43,8 @@ public class Distributeur1Acteur implements IActeur {
 	public void next() {
 		int etape=Filiere.LA_FILIERE.getEtape();
 		this.journal.ajouter("Etape "+ String.valueOf(etape));
+		// mettre à jour l'indicateur de stock
+		indicateurStockTotal.setValeur(stockTotal);
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -49,6 +58,7 @@ public class Distributeur1Acteur implements IActeur {
 	// Renvoie les indicateurs
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
+		res.add(this.indicateurStockTotal);
 		return res;
 	}
 
@@ -108,9 +118,31 @@ public class Distributeur1Acteur implements IActeur {
 
 	public double getQuantiteEnStock(IProduit p, int cryptogramme) {
 		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
-			return 0; // A modifier
+			// Le stock total n'est pas ventilé par produit dans cette version simplifiée
+			return stockTotal; // valeur globale
 		} else {
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
 		}
+	}
+
+	/* --------- IAcheteurBourse implémentation --------- */
+	@Override
+	public double demande(Feve f, double cours) {
+		if (f == Feve.F_MQ) {
+			return 80.0;
+		} else {
+			return 0.0;
+		}
+	}
+
+	@Override
+	public void notificationAchat(Feve f, double quantiteEnT, double coursEnEuroParT) {
+		journal.ajouter("Achat bourse : "+quantiteEnT+" t de "+f+" au prix "+coursEnEuroParT);
+		stockTotal += quantiteEnT;
+	}
+
+	@Override
+	public void notificationBlackList(int dureeEnStep) {
+		journal.ajouter("Blackliste bourse pour "+dureeEnStep+" etapes");
 	}
 }
