@@ -2,12 +2,14 @@ package abstraction.eq8Distributeur2;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.filiere.IActeur;
 import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.general.Variable;
+import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
 
 public class Distributeur2Acteur implements IActeur {
@@ -16,14 +18,20 @@ public class Distributeur2Acteur implements IActeur {
 	protected Variable volumeStock;
 	protected Variable RayonHauteGamme;
 	protected int cryptogramme;
+	protected HashMap<IProduit, Double> Stock;//Écrit par Alexandre
 
 	public Distributeur2Acteur() {
 		this.journal0 = new Journal("Journal Eq 8 numéro étape ", this);
 		this.volumeStock=new Variable("volumeStock", this);
 		this.RayonHauteGamme = new Variable("RayonHauteGamme",this);
+		this.Stock = new HashMap<IProduit,Double>();//Écrit par Alexandre
 	}
 	
 	public void initialiser() {
+		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
+		for (int i=0; i<p.size(); i++){
+			this.Stock.put((IProduit)(p.get(i)),0.0);
+		}
 	}
 
 	public String getNom() {// NE PAS MODIFIER
@@ -40,11 +48,18 @@ public class Distributeur2Acteur implements IActeur {
 
 	public void next() {
 		this.journal0.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
-		this.RayonHauteGamme.ajouter(this,100);
-	}
+		}
 
 	public Color getColor() {// NE PAS MODIFIER
 		return new Color(209, 179, 221); 
+	}
+
+	public Variable getvolumestock(){
+		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
+		for (int i=0; i<p.size(); i++){
+			this.volumeStock.ajouter(this,getQuantiteEnStock((IProduit)(p.get(i)),this.cryptogramme));
+		}
+		return this.volumeStock;
 	}
 
 	public String getDescription() {
@@ -54,7 +69,9 @@ public class Distributeur2Acteur implements IActeur {
 	// Renvoie les indicateurs
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
-		res.add(volumeStock);
+		
+
+		res.add(this.volumeStock);
 		res.add(RayonHauteGamme);
 		return res;
 	}
@@ -112,10 +129,10 @@ public class Distributeur2Acteur implements IActeur {
 	public Filiere getFiliere(String nom) {
 		return Filiere.LA_FILIERE;
 	}
-
+	
 	public double getQuantiteEnStock(IProduit p, int cryptogramme) {
 		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
-			return 0; // A modifier
+			return this.Stock.get(p);
 		} else {
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
 		}
