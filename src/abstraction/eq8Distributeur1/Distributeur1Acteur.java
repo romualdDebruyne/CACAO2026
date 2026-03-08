@@ -16,22 +16,27 @@ public class Distributeur1Acteur implements IActeur {
 	
 	protected Journal journal0;
 	protected Variable volumeStock;/** @author Alexandre Cornet */
-	protected Variable RayonHauteGamme;/** @author Alexandre Cornet */
+	protected HashMap<IProduit, Double> Rayon;/** @author Alexandre Cornet */
 	protected int cryptogramme;/** @author Alexandre Cornet */
 	protected HashMap<IProduit, Double> Stock;/** @author Alexandre Cornet */
+	protected double TailleRayon;/** @author Alexandre Cornet */
+	protected double volumerayon;/** @author Alexandre Cornet */
 
 	public Distributeur1Acteur() {
 		this.journal0 = new Journal("Journal Eq 8 numéro étape ", this);
 		this.volumeStock=new Variable("volumeStock", this); /** @author Alexandre Cornet */
-		this.RayonHauteGamme = new Variable("RayonHauteGamme",this); /** @author Alexandre Cornet */
+		this.Rayon = new HashMap<IProduit, Double>(); /** @author Alexandre Cornet */
 		this.Stock = new HashMap<IProduit,Double>();/** @author Alexandre Cornet */
+		this.TailleRayon = 100.0;/** @author Alexandre Cornet */
+		this.volumerayon = 0.0;/** @author Alexandre Cornet */
 	}
 	
 	public void initialiser() {
 		/** @author Alexandre Cornet */
 		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
 		for (int i=0; i<p.size(); i++){
-			this.Stock.put((IProduit)(p.get(i)),10.0);
+			this.Stock.put((IProduit)(p.get(i)),200.0);
+			this.Rayon.put((IProduit)(p.get(i)),0.0);
 			this.volumeStock.ajouter(this,getQuantiteEnStock((IProduit)(p.get(i)),this.cryptogramme));
 		}
 	}
@@ -52,9 +57,11 @@ public class Distributeur1Acteur implements IActeur {
 		this.journal0.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
 		this.getvolumestock();/** @author Alexandre Cornet */
 	}
+
 	public Color getColor() {// NE PAS MODIFIER
 		return new Color(209, 179, 221); 
 	}
+
 	/** @author Alexandre Cornet */
 	public Variable getvolumestock(){
 		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
@@ -63,6 +70,36 @@ public class Distributeur1Acteur implements IActeur {
 			this.volumeStock.ajouter(this,getQuantiteEnStock((IProduit)(p.get(i)),this.cryptogramme));
 		}
 		return this.volumeStock;
+	}
+
+	/** @author Alexandre Cornet */
+	public double getvolumerayon(){
+		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
+		this.volumerayon=0.0;
+		for (int i=0; i<p.size(); i++){
+			this.volumerayon+=getQuantiteEnStock((IProduit)(p.get(i)),this.cryptogramme);
+		}
+		return this.volumerayon;
+	}
+
+	/** @author Alexandre Cornet */
+	public String AjoutenRayon(IProduit p ,double d){
+		double v = this.getvolumerayon();
+		double q = this.getQuantiteEnStock(p, this.cryptogramme);
+		double f = this.getQuantiteEnRayon(p, this.cryptogramme)
+		if(v+d>this.TailleRayon){
+			String  s="il n'y a pas assez de place dans le rayon";
+			return s;
+		}else if(q>d){
+			String s="vous n'avez pas assez de stock pour ajouter cette quantité";
+			return s;
+		}else{
+			this.Rayon.put(p,f+d);
+			this.Stock.put(p,q-d);
+			String s="Vous avez ajouté le produit en rayon";
+			return s;
+		}
+
 	}
 
 	public String getDescription() {
@@ -74,7 +111,6 @@ public class Distributeur1Acteur implements IActeur {
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
 		res.add(this.volumeStock);
-		res.add(RayonHauteGamme);
 		return res;
 	}
 
@@ -131,10 +167,20 @@ public class Distributeur1Acteur implements IActeur {
 	public Filiere getFiliere(String nom) {
 		return Filiere.LA_FILIERE;
 	}
+
 	/** @author Alexandre Cornet */
 	public double getQuantiteEnStock(IProduit p, int cryptogramme) {
 		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
 			return this.Stock.get(p);
+		} else {
+			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
+		}
+	}
+
+	/** @author Alexandre Cornet */
+	public double getQuantiteEnRayon(IProduit p, int cryptogramme) {
+		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
+			return this.Rayon.get(p);
 		} else {
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
 		}
