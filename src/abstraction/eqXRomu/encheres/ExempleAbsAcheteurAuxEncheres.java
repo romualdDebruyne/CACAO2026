@@ -103,4 +103,9 @@ public class ExempleAbsAcheteurAuxEncheres implements IActeur {
 			return 0;
 		}
 	}
+
+    public double proposerPrix(MiseAuxEncheres miseAuxEncheres) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'proposerPrix'");
+    }
 }
