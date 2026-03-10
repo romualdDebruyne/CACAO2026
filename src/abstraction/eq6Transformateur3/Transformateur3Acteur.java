@@ -31,6 +31,7 @@ public class Transformateur3Acteur implements IActeur {
 	}
 	
 	public void initialiser() {
+		//* @author : Pol Bailleul */
 		for (Feve feve : stockFeve.getFeves()) {
 			this.journal.ajouter("Stock de "+Journal.texteSurUneLargeurDe(feve+"", 15)+" = "+this.stockFeve.getQuantite(feve));
 			this.Eq6TotalStock.ajouter(this, this.stockFeve.getQuantite(feve),this.cryptogramme);
@@ -55,6 +56,7 @@ public class Transformateur3Acteur implements IActeur {
 
 
 	public void next() {
+		//* @author : Pol Bailleul */
 		this.journal.ajouter("=== STOCKS === ");
 		for (Feve feve : stockFeve.getFeves()) {
 			this.journal.ajouter("Stock de "+Journal.texteSurUneLargeurDe(feve+"", 15)+" = "+this.stockFeve.getQuantite(feve));
@@ -80,6 +82,7 @@ public class Transformateur3Acteur implements IActeur {
 	// Renvoie les indicateurs
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
+		 //* @author : Pol Bailleul */
 		res.add(this.Eq6TotalStock);
 		return res;
 	}

@@ -14,7 +14,7 @@ import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
 
-/** @author Le Clézio Brevael */
+/** @author Selma Ben Abdelkader */
 public class StockChocoMarque{   
     private HashMap<ChocolatDeMarque , Double> stock;
     
