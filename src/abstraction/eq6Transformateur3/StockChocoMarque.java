@@ -20,7 +20,6 @@ public class StockChocoMarque{
     
     public StockChocoMarque() {
         stock = new HashMap<>();
-        
 
     }
     public void ajouterProduit(ChocolatDeMarque produit, double quantite) {
