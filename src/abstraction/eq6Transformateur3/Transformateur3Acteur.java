@@ -61,6 +61,7 @@ public class Transformateur3Acteur implements IActeur {
 	// Renvoie les journaux
 	public List<Journal> getJournaux() {
 		List<Journal> res=new ArrayList<Journal>();
+		//* @author : Pol Bailleul */
 		res.add(this.journal);
 		return res;
 	}
