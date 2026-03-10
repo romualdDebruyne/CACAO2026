@@ -14,15 +14,18 @@ import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.Feve;
 import abstraction.eqXRomu.produits.IProduit;
 import abstraction.eq6Transformateur3.StockFeve;
+import abstraction.eq6Transformateur3.StockChocolat;;
 
 public class Transformateur3Acteur implements IActeur {
 	
 	protected Journal journal = new Journal("Journal Eq6", this);
 	protected int cryptogramme;
 	protected StockFeve stockFeve;
+	protected StockChocolat stockChocolat;
 
 	public Transformateur3Acteur() {
-		this.stockFeve = new StockFeve(); 
+		this.stockFeve = new StockFeve();
+		this.stockChocolat = new StockChocolat(); 
 	}
 	
 	public void initialiser() {
@@ -46,6 +49,11 @@ public class Transformateur3Acteur implements IActeur {
 		for (Feve feve : stockFeve.getFeves()) {
 			this.journal.ajouter("Stock de "+Journal.texteSurUneLargeurDe(feve+"", 15)+" = "+this.stockFeve.getQuantite(feve));
 		}
+
+		for (Chocolat chocolat : stockChocolat.getChocolat()) {
+			this.journal.ajouter("Stock de "+Journal.texteSurUneLargeurDe(chocolat+"", 15)+" = "+this.stockChocolat.getQuantite(chocolat));
+		}
+
 
 		int etape = Filiere.LA_FILIERE.getEtape();
 		journal.ajouter("Étape " + etape);
