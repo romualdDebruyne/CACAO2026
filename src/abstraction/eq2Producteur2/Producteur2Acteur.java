@@ -21,6 +21,7 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 	private int numero = 0;
 	protected Journal journal = new Journal("Journal Eq2", this);
 	protected Journal JournalBanque;
+	protected List<Plantation> plantations;
 
 	/** @author Thomas */
 	public Producteur2Acteur() {
@@ -31,18 +32,26 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 			this.stocks.put(f, new Variable("Stock " + f, this, 0.0));
 		}
 		this.stockTotal = new Variable("Stock Total EQ2", this, 0.0);
+		this.plantations = new ArrayList<Plantation>();
 	}
 	
 	public void initialiser() {
-    for (Feve f : Feve.values()) {
-        if (f == Feve.F_MQ) {
-            this.stocks.get(f).setValeur(this, 500);
-        } else if (f == Feve.F_BQ) {
-            this.stocks.get(f).setValeur(this, 300);
-        } else if (f == Feve.F_HQ) {
-            this.stocks.get(f).setValeur(this, 200);
-        }
-    }
+    // Les stocks seront produits par les plantations - pas d'initialisation manuelle
+    
+    // Initialisation des plantations : 1 million d'hectares
+    // 50% MQ = 500,000 ha
+    // 30% HQ = 300,000 ha
+    // 20% BQ = 200,000 ha
+    int ageMature = 72; // 3 ans = plantations matures et productives
+    
+    this.plantations.add(new Plantation(Feve.F_MQ, 500000, ageMature));
+    this.plantations.add(new Plantation(Feve.F_HQ, 300000, ageMature));
+    this.plantations.add(new Plantation(Feve.F_BQ, 200000, ageMature));
+    
+    journal.ajouter("Plantations initialisées : 1,000,000 hectares");
+    journal.ajouter("  - 500,000 ha de fèves MQ");
+    journal.ajouter("  - 300,000 ha de fèves HQ");
+    journal.ajouter("  - 200,000 ha de fèves BQ");
 }
 
 	public String getNom() {// NE PAS MODIFIER
@@ -58,6 +67,22 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 	////////////////////////////////////////////////////////
 	/** @author Thomas */
 	public void next() {
+		// Production basée sur les plantations
+		for (Plantation p : this.plantations) {
+			if (p.estProductive()) {
+				double production = p.produire();
+				Variable stock = this.stocks.get(p.getTypeFeve());
+				if (stock != null) {
+					stock.setValeur(this, stock.getValeur() + production);
+				}
+				journal.ajouter("Production : " + production + " fèves " + p.getTypeFeve() + 
+							   " depuis " + p.getParcelles() + " hectares");
+			}
+			// Vieillir la plantation
+			p.vieillir();
+		}
+		
+		// Calcul du stock total
 		double total = 0.0;
 		for (Feve f : Feve.values()) {
 			Variable v = this.stocks.get(f);
@@ -67,7 +92,7 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 		}
 		this.stockTotal.setValeur(this, total);
 		
-		journal.ajouter("Numero : " + numero + " | Stock total : " + total + " t");
+		journal.ajouter("Numero : " + numero + " | Stock total : " + total + " fèves");
 		numero++;
 	}
 
@@ -83,6 +108,12 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
 		res.add(this.stockTotal);
+		
+		// Ajouter les indicateurs pour chaque type de plantation
+		for (Plantation p : this.plantations) {
+			res.add(new Variable("Hectares " + p.getTypeFeve(), this, p.getParcelles()));
+		}
+		
 		return res;
 	}
 
@@ -167,7 +198,7 @@ public class Producteur2Acteur implements IActeur, IVendeurBourse {
 		double livrable = 0.0;
 		if (v != null) {
 			livrable = Math.min(quantiteEnT, v.getValeur());
-			v.setValeur(this, v.getValeur() - livrable);
+			v.retirer(this, livrable, this.cryptogramme);
 		}
 		journal.ajouter("Vente bourse : " + livrable + " t de " + f + " a " + coursEnEuroParT + "€/t");
 		return livrable;

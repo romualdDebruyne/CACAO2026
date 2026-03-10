@@ -24,7 +24,7 @@ public class Plantation {
             case F_BQ:
                 this.dureeDeVie = 960;  // 40 ans
                 this.tempsAvantProduction = 72;  // 3 ans
-                this.productionParParcelle = 105000 ; //  fèves par parcelle a chaque next
+                this.productionParParcelle = 3 ; //  tonnes par hectare à chaque step
                 this.prix_achat = 0;
                 this.prix_vente = 0;
                 this.prix_replantation = 0;
@@ -34,7 +34,7 @@ public class Plantation {
             case F_MQ:
                 this.dureeDeVie = 960;
                 this.tempsAvantProduction = 72; // 3 ans
-                this.productionParParcelle = 85000;
+                this.productionParParcelle = 4;
                 this.prix_achat = 0;
                 this.prix_vente = 0;
                 this.prix_replantation =0 ;
@@ -44,7 +44,7 @@ public class Plantation {
             case F_HQ:
                 this.dureeDeVie = 960;
                 this.tempsAvantProduction = 72; // 5 ans
-                this.productionParParcelle = 63000;
+                this.productionParParcelle = 2;
                 this.prix_achat = 0;
                 this.prix_vente = 0;
                 this.prix_replantation = 0;
@@ -64,6 +64,49 @@ public class Plantation {
             default:
                 throw new IllegalArgumentException("Type de fève non reconnu !");
         }
+    }
+
+    // Getters
+    public Feve getTypeFeve() {
+        return typeFeve;
+    }
+
+    public int getParcelles() {
+        return parcelles;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public int getDureeDeVie() {
+        return dureeDeVie;
+    }
+
+    public int getTempsAvantProduction() {
+        return tempsAvantProduction;
+    }
+
+    public int getProductionParParcelle() {
+        return productionParParcelle;
+    }
+
+    // Méthode pour calculer la production totale de cette plantation
+    public double produire() {
+        if (age >= tempsAvantProduction && age < dureeDeVie) {
+            return parcelles * productionParParcelle;
+        }
+        return 0.0;
+    }
+
+    // Méthode pour vieillir la plantation d'un step
+    public void vieillir() {
+        age++;
+    }
+
+    // Méthode pour vérifier si la plantation est productive
+    public boolean estProductive() {
+        return age >= tempsAvantProduction && age < dureeDeVie;
     }
 
 }
