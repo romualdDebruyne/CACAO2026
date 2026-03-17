@@ -41,7 +41,7 @@ public class Approvisionnement2 {
         int etapeReference = Filiere.LA_FILIERE.getEtape() - 24;
 
         for (ChocolatDeMarque cdm : tousLesChocolats) {
-            double prixHisto = Filiere.LA_FILIERE.prixMoyen(cdm, etapeReference);            
+            double prixHisto = Filiere.LA_FILIERE.prixMoyen(cdm, etapeReference);
             this.prixDAchat.put(cdm, prixHisto);
         }
     }
