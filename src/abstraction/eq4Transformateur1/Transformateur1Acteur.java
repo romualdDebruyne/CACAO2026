@@ -10,17 +10,24 @@ import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.IProduit;
 
-public class Transformateur1Acteur implements IActeur {
-	
-	private Journal journal= new Journal("numéro de l'étape",this );
 
+public class Transformateur1Acteur implements IActeur {
+	/**@author Ewan Lefort */
+	private Journal journal= new Journal("numéro de l'étape",this );
+	private Transformateur1Stock stock= new Transformateur1Stock();
 	protected int cryptogramme;
+	Variable totalstocks= new Variable("EQ4T Total Stocks", "<html>Quantite totale de feves en stock</html>", this,0);
+		
 
 	public Transformateur1Acteur() {
 	}
-	
-	public void initialiser() {
+	/**@author Ewan Lefort */
+	public void initialiser() 
+	{
+		
 	}
+
+	
 
 	public String getNom() {// NE PAS MODIFIER
 		return "EQ4";
@@ -33,10 +40,13 @@ public class Transformateur1Acteur implements IActeur {
 	////////////////////////////////////////////////////////
 	//         En lien avec l'interface graphique         //
 	////////////////////////////////////////////////////////
-
+	/**@author Ewan Lefort */
 	public void next() {
 		if (Filiere.LA_FILIERE.getEtape()>=0){
-		journal.ajouter("etape:"+Filiere.LA_FILIERE.getEtape());}
+			int etape= Filiere.LA_FILIERE.getEtape();
+		journal.ajouter("etape:"+etape);
+		this.totalstocks.setValeur(this, this.stock.getTotalStocks(), cryptogramme);
+	}
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
@@ -46,10 +56,17 @@ public class Transformateur1Acteur implements IActeur {
 	public String getDescription() {
 		return "Bla bla bla";
 	}
+/**@author Safta Yassine */
+	public Transformateur1Stock getStock(){
+		return this.stock;
+	}
 
-	// Renvoie les indicateurs
+	/**@author Ewan Lefort */
+	// Renvoie les indicateurs.
 	public List<Variable> getIndicateurs() {
 		List<Variable> res = new ArrayList<Variable>();
+		
+		res.add(totalstocks);
 		return res;
 	}
 
@@ -58,8 +75,8 @@ public class Transformateur1Acteur implements IActeur {
 		List<Variable> res=new ArrayList<Variable>();
 		return res;
 	}
-
-	// Renvoie les journaux
+	/**@author Ewan Lefort */
+	// Renvoie les journaux.
 	public List<Journal> getJournaux() {
 		List<Journal> res=new ArrayList<Journal>();
 		res.add(journal);
