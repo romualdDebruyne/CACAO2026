@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 
-/** @author Victor Vannier-Moreau, Guillaume Leroy et Vassili Spiridonov */
 public class Arbres_par_gamme {
+    /** @author Victor Vannier-Moreau*/
     private Feve feve;
     // Liste de 961 éléments (de l'indice 0 à 960)
     private List<Integer> distributionAge; 
@@ -17,6 +17,7 @@ public class Arbres_par_gamme {
 
     
     public Arbres_par_gamme(Feve feve) {
+        /** @author Victor Vannier-Moreau*/
         this.feve = feve;
         this.distributionAge = new ArrayList<>(961);
         this.nbHectareTotal = 961*350;
@@ -32,6 +33,7 @@ public class Arbres_par_gamme {
      * Regroupe les données de la liste dans une HashMap pour l'affichage
      */
     public Map<String, Integer> getTranches() {
+        /** @author Vassili Spiridonov*/
         Map<String, Integer> recap = new HashMap<>();
         recap.put("0-3", 0);
         recap.put("3-5", 0);
@@ -62,6 +64,7 @@ public class Arbres_par_gamme {
      * Calcule la production de fèves selon les paliers d'âge
      */
     public long getProductionFeve() { 
+    /** @author Guillaule Leroy*/
     Map<String, Integer> recap = this.getTranches();
     
     long nbJeunes = recap.get("3-5");   
@@ -94,6 +97,7 @@ public class Arbres_par_gamme {
      * Fait vieillir la plantation d'une période
      */
     public void ageIncr() {
+        /** @author Victor Vannier-Moreau*/
         // 1. On retire les arbres qui ont fini leur 960ème période (40 ans)
         int arbresSortants = distributionAge.remove(960); 
         

@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Plantation3 {
 
+
+public class Plantation3 {
     // On stocke un objet Arbres_par_gamme pour chaque type de fève précis
     private Map<Feve, Arbres_par_gamme> stock;
+    /** @author Vassili Spiridonov*/
 
     public Plantation3() {
+        /** @author Vassili Spiridonov*/
         this.stock = new HashMap<>();
 
         // Initialisation pour chaque type de fève disponible
@@ -25,17 +28,19 @@ public class Plantation3 {
      * Retourne la production totale de fèves, toutes gammes confondues
      */
     public long getProductionTotale() {
-    long total = 0;
-    for (Arbres_par_gamme g : stock.values()) {
-        total = total + g.getProductionFeve();
+    /** @author Vassili Spiridonov*/
+        long total = 0;
+        for (Arbres_par_gamme g : stock.values()) {
+            total = total + g.getProductionFeve();
+        }
+        return total;
     }
-    return total;
-}
 
     /**
      * Retourne la production pour une fève précise
      */
     public long getProductionFève(Feve f) {
+        /** @author Vassili Spiridonov*/
         return this.stock.get(f).getProductionFeve();
     }
 
@@ -43,6 +48,7 @@ public class Plantation3 {
      * Retourne le nombre d'hectares total de la plantation
      */
     public int getNbHectareTotal() {
+        /** @author Guillaume Leroy*/
         int totalHa = 0;
         // Chaque Arbres_par_gamme a son propre nbHectareTotal 
         for (Arbres_par_gamme g : stock.values()) {
@@ -55,6 +61,7 @@ public class Plantation3 {
      * Fait avancer le temps d'une période pour tous les arbres
      */
     public void nextStep() {
+        /** @author Guillaume Leroy*/
         for (Arbres_par_gamme g : stock.values()) {
             g.ageIncr();
         }
@@ -64,6 +71,7 @@ public class Plantation3 {
      * Affiche un récapitulatif complet
      */
     public void afficherRecap() {
+        /** @author Victor Vannier-Moreau*/
         System.out.println("=== RÉCAPITULATIF DE LA PLANTATION ===");
         for (Feve f : stock.keySet()) {
             long prod = stock.get(f).getProductionFeve();
