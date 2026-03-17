@@ -17,7 +17,7 @@ import abstraction.eqXRomu.produits.Feve;
  */
 
 
-
+/**
 public class Transformateur2AchatEncheres extends ExempleAbsAcheteurAuxEncheres implements IAcheteurAuxEncheres {
 
     public Transformateur2AchatEncheres(double prixInit) {
@@ -73,3 +73,4 @@ public class Transformateur2AchatEncheres extends ExempleAbsAcheteurAuxEncheres 
 		journal.ajouter("   mon prix a ete refuse. Mon prix pour "+propositionNonRetenue.getMiseAuxEncheres().getVendeur()+" passe a "+(propositionNonRetenue.getPrixTonne()+100.));
 	}
 }
+*/
