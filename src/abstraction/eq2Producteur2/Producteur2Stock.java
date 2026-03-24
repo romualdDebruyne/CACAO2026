@@ -134,5 +134,11 @@ public class Producteur2Stock {
 		res.add(JournalStock);
 		return res;
 	}
+
+    public void TaxeStockage(){
+        double tonnes = this.stockTotal.getValeur(cryptogramme);
+        Filiere.LA_FILIERE.getBanque().payerCout(this, cryptogramme, "Stockage", tonnes*cout_stockage);
+        JournalBanque.ajouter("On paie "+tonnes*cout_stockage+" à la banque due au stockage");
+    }
 }
 
