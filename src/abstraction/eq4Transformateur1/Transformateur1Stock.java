@@ -65,25 +65,6 @@ public class Transformateur1Stock extends Transformateur1Acteur{
     }
     public double getTotalStocksFeves(){
         return this.getStocksFevesBQ()+this.getStocksFevesMQ()+this.getStocksFevesHQ()+this.getStocksFevesBQE()+this.getStocksFevesMQE()+this.getStocksFevesHQE();
-=======
-
-    public double getTotalStocksFeves(){
-        double totalstock=0;
-        for (IProduit feve: stock.keySet()){
-            if (feve.getType()=="Feve");
-            totalstock+=this.getStocksProduit(feve);
-        }
-        return totalstock;
-    }
-
-    public double getTotalStocksChoco(){
-        double totalstock=0;
-        for (IProduit choco: stock.keySet()){
-            if (choco.getType()=="Chocolat");
-            totalstock+=this.getStocksProduit(choco);
-        }
-        return totalstock;
->>>>>>> a3f7cd93906f660acd7cc4fa6abbcbe1b1e2fbe0
     }
 
     public double getTotalStocks(){
