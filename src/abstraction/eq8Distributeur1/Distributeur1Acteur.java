@@ -26,6 +26,7 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 	protected HashMap<IProduit, Double> Rayon;/** @author Alexandre Cornet */
 	protected int cryptogramme;/** @author Alexandre Cornet */
 	protected HashMap<IProduit, Double> Stock;/** @author Alexandre Cornet */
+	protected HashMap<IProduit, Double> Prix;/** @author Alexandre Cornet */
 	protected double TailleRayon;/** @author Alexandre Cornet */
 	protected double volumerayon;/** @author Alexandre Cornet */
 
@@ -42,6 +43,7 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 		this.volumeStock=new Variable("EQ8 StockTotal", this); 
 		this.Rayon = new HashMap<IProduit, Double>(); 
 		this.Stock = new HashMap<IProduit, Double>();
+		this.Prix = new HashMap<IProduit, Double>();
 		this.TailleRayon = 1000.0;
 		this.volumerayon = 0.0;
 	}
@@ -51,6 +53,7 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 		for (int i=0; i<p.size(); i++){
 			this.Stock.put((IProduit)(p.get(i)),500.0);
 			this.Rayon.put((IProduit)(p.get(i)),0.0);
+			this.Prix.put((IProduit)(p.get(i)),8000.0);
 			this.volumeStock.ajouter(this,getQuantiteEnStock((IProduit)(p.get(i)),this.cryptogramme));
 		}
 	}
@@ -261,29 +264,42 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
 		}
 	}
+	/** @author Alexandre Cornet */
+	public double getPrixProduit(IProduit p, int cryptogramme) {
+		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
+			return this.Prix.get(p);
+		} else {
+			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
+		}
+	}
+
+	/** @author Alexandre Cornet */
 	@Override
 	public double prix(ChocolatDeMarque choco) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'prix'");
+		return this.getPrixProduit(choco, this.cryptogramme);
 	}
+	/** @author Alexandre Cornet */
 	@Override
 	public double quantiteEnVente(ChocolatDeMarque choco, int crypto) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'quantiteEnVente'");
+		return this.getQuantiteEnRayon(choco, this.cryptogramme);
 	}
+	/** @author Alexandre Cornet */
 	@Override
 	public double quantiteEnVenteTG(ChocolatDeMarque choco, int crypto) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'quantiteEnVenteTG'");
 	}
+	/** @author Alexandre Cornet */
 	@Override
 	public void vendre(ClientFinal client, ChocolatDeMarque choco, double quantite, double montant, int crypto) {
-		// TODO Auto-generated method stub
+		double v=getQuantiteEnRayon(choco,this.cryptogramme);
+		this.Rayon.put((IProduit)(choco),v-quantite);
 		throw new UnsupportedOperationException("Unimplemented method 'vendre'");
 	}
+	/** @author Alexandre Cornet */
 	@Override
 	public void notificationRayonVide(ChocolatDeMarque choco, int crypto) {
-		// TODO Auto-generated method stub
+		this.journal0.ajouter("Rayon de "+choco+" en rupture");
 		throw new UnsupportedOperationException("Unimplemented method 'notificationRayonVide'");
 	}
 }
