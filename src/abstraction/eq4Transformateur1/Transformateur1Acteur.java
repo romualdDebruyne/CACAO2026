@@ -31,16 +31,14 @@ public class Transformateur1Acteur implements IActeur, IFabricantChocolatDeMarqu
 	}
 	
 	public List<ChocolatDeMarque> getChocolatsProduits(){
-		ChocolatDeMarque ProntellaM= new ChocolatDeMarque(Chocolat.C_MQ, "ProntellaM", cryptogramme);
+		ChocolatDeMarque ProntellaM= new ChocolatDeMarque(Chocolat.C_MQ, "ProntellaM", 65);
 		List<ChocolatDeMarque> ListeChoco=new ArrayList<ChocolatDeMarque>();
 		ListeChoco.add(ProntellaM);
 		return ListeChoco;
 	}
 	public List<String> getMarquesChocolat(){
 		List<String> ListeNoms= new ArrayList<String>();
-		for (ChocolatDeMarque Choco: this.getChocolatsProduits()){
-			ListeNoms.add(Choco.getMarque());
-		}
+		ListeNoms.add("ProntellaM");
 		return ListeNoms;
 	}
 	
