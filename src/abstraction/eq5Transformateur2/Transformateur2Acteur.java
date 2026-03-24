@@ -1,6 +1,7 @@
 package abstraction.eq5Transformateur2;
 
 import java.awt.Color;
+import java.awt.geom.FlatteningPathIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.Integer;
@@ -21,7 +22,7 @@ public class Transformateur2Acteur implements IActeur {
 	public static Double prix_MP;
 	protected SuperviseurVentesAuxEncheres superviseur;
 	protected SuperviseurVentesAO superviseurAO;
-
+	protected boolean initialise;
 	/** @author Pierre
     **/
 	public Transformateur2Acteur() {
@@ -33,13 +34,14 @@ public class Transformateur2Acteur implements IActeur {
 		this.Journaux.add(new Journal("Achat Enchère", this));
 		this.Journaux.add(new Journal("Achat Bourse", this));
 		this.Journaux.add(new Journal("Vente AO", this));
+		this.initialise=false;
 	}
 	
 	public void initialiser() {
 
 		superviseur =(SuperviseurVentesAuxEncheres)(Filiere.LA_FILIERE.getActeur("Sup.Encheres"));
 		superviseurAO = (SuperviseurVentesAO)(Filiere.LA_FILIERE.getActeur("Sup.AO"));
-
+		this.initialise=true;
 
 	}
 
