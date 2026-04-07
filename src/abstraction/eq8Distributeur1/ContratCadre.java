@@ -21,29 +21,30 @@ public class ContratCadre extends Approvisionnement2 implements IAcheteurContrat
     private Map<IProduit, Double> prixCibleVoulu;
     private Map<IProduit, Double> prixMaxVoulu;
     protected List<ExemplaireContratCadre> mesContrats;
+    private Map<IProduit, Double> quantiteParEtapeVoulue;
 
     public ContratCadre() {
         super();
         this.prixCibleVoulu = new HashMap<>();
         this.prixMaxVoulu = new HashMap<>();
         this.mesContrats = new ArrayList<>();
+        this.quantiteParEtapeVoulue = new HashMap<>();
     }
 
     @Override
-    protected double methodeIntermediaireAchat(ChocolatDeMarque cdm, double besoin, double prixCible, double prixMax) {
+    protected double methodeIntermediaireAchat(ChocolatDeMarque cdm, double besoinParEtape, double prixCible, double prixMax) {
         this.prixCibleVoulu.put(cdm, prixCible);
         this.prixMaxVoulu.put(cdm, prixMax);
+        this.quantiteParEtapeVoulue.put(cdm, besoinParEtape);
 
-        // Accès au superviseur [cite: 52]
         SuperviseurVentesContratCadre sup = (SuperviseurVentesContratCadre) (Filiere.LA_FILIERE.getActeur("Sup.CCadre"));
-        // Récupération des vendeurs possibles [cite: 55]
         List<IVendeurContratCadre> vendeurs = sup.getVendeurs(cdm);
         
         if (vendeurs.size() > 0) {
-            // Proposition d'un échéancier sur 12 étapes (environ 6 mois)
-            Echeancier ech = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 12, besoin / 12.0);
+            // On propose 12 étapes avec précisément notre besoin par étape
+            // Quantité totale du contrat = besoinParEtape * 12
+            Echeancier ech = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 12, besoinParEtape);
             
-            // On lance la demande [cite: 54, 91]
             ExemplaireContratCadre c = sup.demandeAcheteur(this, vendeurs.get(0), cdm, ech, this.cryptogramme, false);
             
             if (c != null) {
@@ -60,46 +61,75 @@ public class ContratCadre extends Approvisionnement2 implements IAcheteurContrat
     }
 
     public Echeancier contrePropositionDeLAcheteur(ExemplaireContratCadre contrat) {
-        // On récupère le besoin total que nous avions identifié
-        double besoinInitial = this.prixCibleVoulu.getOrDefault(contrat.getProduit(), 0.0);
-        
-        // Si le vendeur propose trop, on ramène à notre besoin [cite: 58, 98]
-        if (contrat.getEcheancier().getQuantiteTotale() <= besoinInitial * 1.05) {
-            return contrat.getEcheancier();
-        } else {
-            Echeancier newEch = contrat.getEcheancier();
-            // On ajuste chaque étape pour ne pas dépasser notre capacité
-            for (int i = newEch.getStepDebut(); i <= newEch.getStepFin(); i++) {
-                newEch.set(i, newEch.getQuantite(i) * 0.9); 
+        double monBesoin = this.quantiteParEtapeVoulue.getOrDefault(contrat.getProduit(), 0.0);
+        if (monBesoin <= 0) return null; // Sécurité
+
+        Echeancier echVendeur = contrat.getEcheancier();
+        Echeancier echReponse = new Echeancier(echVendeur.getStepDebut());
+
+        for (int step = echVendeur.getStepDebut(); step <= echVendeur.getStepFin(); step++) {
+            double qteVendeur = echVendeur.getQuantite(step);
+
+            if (qteVendeur > monBesoin) {
+                // Cas 1 : Trop de chocolat -> On impose strictement notre besoin
+                echReponse.set(step, monBesoin);
+            } 
+            else if (Math.abs(qteVendeur - monBesoin) < 0.01) {
+                // Cas 2 : Égalité -> On garde la valeur
+                echReponse.set(step, qteVendeur);
+            } 
+            else {
+                // Cas 3 : Inférieur au besoin -> On vise le milieu (compromis)
+                double milieu = (qteVendeur + monBesoin) / 2.0;
+                echReponse.set(step, milieu);
             }
-            return newEch;
         }
+
+        return echReponse;
     }
 
     public double contrePropositionPrixAcheteur(ExemplaireContratCadre contrat) {
         double pCible = this.prixCibleVoulu.getOrDefault(contrat.getProduit(), 1000.0);
         double pMax = this.prixMaxVoulu.getOrDefault(contrat.getProduit(), 2000.0);
-        double pVendeur = contrat.getPrix();
+        double pVendeur = contrat.getPrix(); // Dernière proposition du vendeur
 
-        // Logique : si < 90% du prix cible, on accepte immédiatement [cite: 64]
+        // 1. Si le prix vendeur est déjà très bon (< 90% du prix cible), on accepte direct
         if (pVendeur <= pCible * 0.9) {
             return pVendeur;
         }
 
-        // Sinon, on propose une augmentation progressive (5% de plus que notre dernière offre)
-        double derniereOffreAcheteur = contrat.getListePrix().size() < 2 ? pCible : contrat.getListePrix().get(contrat.getListePrix().size()-2);
-        double nouvelleOffre = derniereOffreAcheteur * 1.05;
+        // 2. Définition de la stratégie de progression linéaire
+        double debutNego = pCible * 0.9;
+        double margeTotale = pMax - debutNego;
+    
+        // On calcule le nombre de propositions faites par l'acheteur jusqu'ici.
+        // La liste contient : [Vendeur1, Acheteur1, Vendeur2, Acheteur2, Vendeur3...]
+        // Le nombre de contre-propositions de l'acheteur est donc la taille de la liste divisée par 2.
+        int tourDeNego = contrat.getListePrix().size() / 2;
 
-        // Arrêt des négociations si on dépasse le prix max [cite: 65, 114]
-        if (nouvelleOffre > pMax) {
-            return -1.0; 
+        // 3. Calcul de notre nouvelle offre
+        // On ajoute une "marche" fixe à chaque tour (1/10ème de la marge totale)
+        double nouvelleOffre = debutNego + (tourDeNego * (margeTotale / 10.0));
+
+        // 4. Gestion de la fin de négociation
+        if (tourDeNego >= 10) {
+            // Au bout de 10 tours, on s'arrête. 
+            // Si le prix du vendeur est en dessous de notre max, on fait un dernier effort et on accepte
+            // Sinon, on retourne -1 pour casser la négociation.
+            return (pVendeur <= pMax) ? pVendeur : -1.0;
         }
-        
-        return (nouvelleOffre >= pVendeur) ? pVendeur : nouvelleOffre;
+
+        // Si notre calcul nous amène au-dessus du prix vendeur, on ne surenchérit pas, 
+        // on accepte simplement son prix.
+        if (nouvelleOffre >= pVendeur) {
+            return pVendeur;
+        }
+
+        return nouvelleOffre;
     }
 
     public void notificationNouveauContratCadre(ExemplaireContratCadre contrat) {
-        // Notification de réussite des négociations [cite: 66, 120]
+        // Notification de réussite des négociations
         this.journal5.ajouter(Color.GREEN, Color.BLACK, "CC conclu : " + contrat.toString());
         if (!this.mesContrats.contains(contrat)) {
             this.mesContrats.add(contrat);
@@ -107,7 +137,7 @@ public class ContratCadre extends Approvisionnement2 implements IAcheteurContrat
     }
 
     public void receptionner(IProduit p, double quantiteEnTonnes, ExemplaireContratCadre contrat) {
-        // Mise à jour du stock lors de la livraison effective [cite: 67]
+        // Mise à jour du stock lors de la livraison effective
         double stockActuel = this.Stock.getOrDefault(p, 0.0);
         this.Stock.put(p, stockActuel + quantiteEnTonnes);
         this.journal5.ajouter("Réception de " + quantiteEnTonnes + "T de " + p);
