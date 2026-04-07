@@ -66,6 +66,21 @@ public class Producteur1Cooperative extends Producteur1Planteur{
         banque.payerCout(this, this.cryptogramme, "Masse salariale" , 15 * montant);
     }
 
+    
+    public void setSalaire(boolean adulte, boolean equitable, double salaire){
+        if(equitable){
+            this.coopEq.put("salaire adulte", salaire);
+        }
+
+        else if(adulte){
+            this.coopNonEq.put("salaire adulte", salaire);
+        }
+
+        else{
+            this.coopNonEq.put("salaire enfant", salaire);
+        }
+    }
+
 
     public void next(){
         super.next();

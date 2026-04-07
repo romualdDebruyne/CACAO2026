@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import abstraction.eqXRomu.filiere.Banque;
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.produits.Feve;
 
@@ -133,6 +134,15 @@ public class Producteur1Planteur extends Producteur1Stock{
 
     }
 
+    public void impots(){
+        Banque banque=Filiere.LA_FILIERE.getBanque();
+        banque.payerCout(this, this.cryptogramme, "Impot plantation" ,250);
+    }
+
+    public void charge(){
+        Banque banque=Filiere.LA_FILIERE.getBanque();
+        banque.payerCout(this, this.cryptogramme, "Masse salariale" , 617.65);
+    }
 
 
     /**
@@ -143,6 +153,8 @@ public class Producteur1Planteur extends Producteur1Stock{
         int etape = Filiere.LA_FILIERE.getEtape();
         if(etape%24 == 0){ //Une collecte tous les ans, a une dâte arbitraire pour l'instant
             this.collecter();
+            this.impots();
+            this.charge();
         }
     }
 

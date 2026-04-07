@@ -2,6 +2,8 @@ package abstraction.eq1Producteur1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
+import abstraction.eqXRomu.filiere.Banque;
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.produits.Feve;
 
@@ -133,6 +135,12 @@ public class Producteur1Stock extends Producteur1Acteur{
 	//         Actions autres        //
 	///////////////////////////////////
     
+    public void loyer(){
+        double montant = 180 * this.totalStock;
+        Banque banque=Filiere.LA_FILIERE.getBanque();
+        banque.payerCout(this, this.cryptogramme, "Loyer Stockage" , montant);
+    }
+    
     public void next() {
         super.next();
 
@@ -146,6 +154,13 @@ public class Producteur1Stock extends Producteur1Acteur{
         this.journal.ajouter( "Stock fève MQ_E :"+String.valueOf(this.stock.get(Feve.F_MQ_E)));
         this.journal.ajouter( "Stock fève HQ :"+String.valueOf(this.stock.get(Feve.F_HQ)));
         this.journal.ajouter( "Stock fève HQ_E :"+String.valueOf(this.stock.get(Feve.F_HQ_E)));
+
+
+        // Loyer
+        int etape = Filiere.LA_FILIERE.getEtape();
+        if(etape%24 == 0){ //Une collecte tous les ans, a une dâte arbitraire pour l'instant
+            this.loyer();
+        }
 
     }
 
