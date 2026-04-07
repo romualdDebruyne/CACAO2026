@@ -154,9 +154,9 @@ public class Producteur1Planteur extends Producteur1Stock{
     public void next(){
         super.next();
         int etape = Filiere.LA_FILIERE.getEtape();
+        this.impots();
         if(etape%24 == 0){ //Une collecte tous les ans, a une dâte arbitraire pour l'instant
             this.collecter();
-            this.impots();
             this.charge();
         }
     }
