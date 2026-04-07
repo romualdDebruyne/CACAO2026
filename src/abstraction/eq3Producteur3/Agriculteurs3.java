@@ -1,23 +1,26 @@
 package abstraction.eq3Producteur3;
 
 /** @author Vassili Spiridonov*/
-public class Agriculteurs3 extends Producteur3Acteur {
+public class Agriculteurs3 {
     private int nbCDI;  
     private int nbInterim;
     private int nbEnfant;    
     private double salaireCDI; 
     private double salaireInterim;     
     private double salaireEnfant;   
-    private boolean exploitationEnfant; 
+
 
     public void Agriculteur3(Plantation3 plantation) {
-        this.nbCDI = 30 * plantation.getNbHectareTotal(); // 30 employés adultes par hectare 
+        this.nbCDI = 30 * plantation.getNbHectareTotal(); // 30 employés adultes par hectare
+    }
+    
+    public Agriculteurs3(Plantation3 plantation) {
+        this.nbCDI = 30 * plantation.getNbHectareTotal();
         this.nbInterim = 0;
         this.nbEnfant = 0; // Entrerpise éthique : aucun enfants exploités 
         this.salaireCDI = 12.0; // On les rémunères au max décidé dans les règles de fonctionnement (0.8€/jour)
         this.salaireInterim = 18.0; // On paye plus chère les intérimaires
-        this.salaireEnfant = 3.0;  // D'après les règles de fonctionnemments : 0.2€/jour
-        this.exploitationEnfant = false; // On vérifie le respect de la charte éthique 
+        this.salaireEnfant = 3.0;  // D'après les règles de fonctionnemments : 0.2€/jour 
     }
 
     public double getForceDeTravailTotale() {
@@ -49,14 +52,29 @@ public class Agriculteurs3 extends Producteur3Acteur {
     
 
 
-    //Cette fonction décrit notre engagement éthique concernant l'exploitation d'enfants
-    public String getEthiqueEnfant() {
-        if (!this.exploitationEnfant && this.nbEnfant == 0) {
-            return "Pas d'enfants exploités";
+    //Cette fonction décrit notre engagement éthique 
+    
+    public boolean estEthique() {
+        boolean PasExploitationEnfant = this.nbEnfant == 0;
+        boolean SalaireMinimum = this.salaireCDI >= 7.5; //Salaire minimum de 0.5€/jour 
+        double totalAdultes = this.nbCDI + this.nbInterim;
+        boolean ContratLongTerme = false;
+        if (totalAdultes > 0) {
+            ContratLongTerme = (this.nbCDI / totalAdultes) >= 0.8;
         }
-        return "Exploitation non conforme aux standards éthiques.";
+
+        return PasExploitationEnfant && SalaireMinimum && ContratLongTerme;
+    }
+
+    //Verification de notre éligibilité 
+    public String getStatutHappyWorker() {
+        if (this.estEthique()) {
+            return "Eligible au label Happy Worker";
+        }
+        return "Non éligible au label Happy Worker.";
+    }
+ 
+
     }
 
 
-
-}
