@@ -37,7 +37,7 @@ public class Agriculteurs3 {
 
     //On licencie des CDI
     public void licencieCDI(int nb) {
-        this.nbCDI -= Math.max(0, nb);
+        this.nbCDI = Math.max(0, this.nbCDI - nb);
     }
 
     //Recrutement ponctuel des intérimaires 
@@ -45,6 +45,7 @@ public class Agriculteurs3 {
         this.nbInterim = Math.max(0, nb);
     }
 
+    
 
 
     //Cette fonction décrit notre engagement éthique concernant l'exploitation d'enfants
