@@ -71,54 +71,10 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 	//         En lien avec l'interface graphique         //
 	////////////////////////////////////////////////////////
 	/**
-         * @author Alexandre Cornet
-		 * @author Ewen Landron
-         */ 
+    * @author Alexandre Cornet
+	* @author Ewen Landron
+    */ 
 	public void next() {
-		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
-		Banque b=Filiere.LA_FILIERE.getBanque();
-		Variable v=this.getvolumestock();
-		double v1=v.getValeur();
-
-		//JournalActions
-		this.journal3.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
-		for (int i=0; i<p.size(); i++){
-			this.journal3.ajouter(AjoutenRayon(p.get(i), 100));
-		}
-		this.journal3.ajouter(changerTailleRayon(0));
-		this.journal3.ajouter("----------------------------------------------");
-
-		//Journal Étapes
-		this.journal0.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
-
-		//Journal Rayon
-		this.journal1.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
-		this.journal1.ajouter("Taille du Rayon : "+this.TailleRayon+"T");
-		this.journal1.ajouter("Quantité en rayon : "+this.volumerayon+"T");
-		for (int i=0; i<p.size(); i++){
-			double q=this.getQuantiteEnRayon(p.get(i),this.cryptogramme);
-			this.journal1.ajouter(p.get(i)+" : "+q+"T");
-		}
-		this.journal1.ajouter("----------------------------------------------");
-
-		//Journal Stock
-		this.journal2.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
-		for (int i=0; i<p.size(); i++){
-			double q=this.getQuantiteEnStock(p.get(i),this.cryptogramme);
-			this.journal2.ajouter(p.get(i)+" : "+q+"T");
-		}
-		this.journal2.ajouter("----------------------------------------------");
-
-		//Journal Frais
-		if(this.volumerayon<this.TailleRayon){
-			this.TailleRayon=this.volumerayon;
-		}
-		this.journal4.ajouter("Numéro de tour : " + Filiere.LA_FILIERE.getEtape());
-		b.payerCout(this, this.cryptogramme, "Frais de Rayonnage", TailleRayon*0.01);
-		this.journal4.ajouter("Frais de Rayon : "+TailleRayon*0.01 +" €");
-		b.payerCout(this, this.cryptogramme, "Frais de Stockage", v1*0.01);
-		this.journal4.ajouter("Frais de Stockage : "+v1*0.01+" €");
-		this.journal4.ajouter("----------------------------------------------");
 		
 	}
 
@@ -148,10 +104,10 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 
 	/** @author Alexandre Cornet */
 	public String changerTailleRayon(double d){
-		Banque b=Filiere.LA_FILIERE.getBanque();
+		//Banque b=Filiere.LA_FILIERE.getBanque();
 		this.TailleRayon+=d;
 		if(d>=0){
-			b.payerCout(this, this.cryptogramme, "Achat de Rayonnage", 0);
+			//b.payerCout(this, this.cryptogramme, "Achat de Rayonnage", 0);
 			return ("La taille du rayon a été augmentée de "+d+"T");
 		}else{
 			d=-d;
@@ -160,7 +116,7 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 				this.TailleRayon+=d;
 				return("Il y a trop de quantité en rayon pour baisser la taille du rayon");
 			}else{
-				b.payerCout(this, this.cryptogramme, "Vente de Rayonnage", 0);
+				//b.payerCout(this, this.cryptogramme, "Vente de Rayonnage", 0);
 				return ("La taille du rayon a été diminuée de "+d+"T");
 			}
 		}
@@ -226,12 +182,14 @@ public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarq
 
 		double coutStockage = 0.0;
 		double coutMiseEnRayon = 0.0;
+		double coutStockageParTonne = 7.5;
+		 double coutMiseEnRayonParTonne = 0.0;
 
 		List<ChocolatDeMarque> p = Filiere.LA_FILIERE.getChocolatsProduits();
 		for (int i = 0; i < p.size(); i++) {
 			IProduit prod = (IProduit) p.get(i);
-			coutStockage += getQuantiteEnStock(prod, this.cryptogramme) * this.coutStockageParTonne;
-			coutMiseEnRayon += getQuantiteEnRayon(prod, this.cryptogramme) * this.coutMiseEnRayonParTonne;
+			coutStockage += getQuantiteEnStock(prod, this.cryptogramme) * coutStockageParTonne;
+			coutMiseEnRayon += getQuantiteEnRayon(prod, this.cryptogramme) * coutMiseEnRayonParTonne;
 		}
 
 		couts.put("stockage", coutStockage);
