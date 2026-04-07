@@ -15,7 +15,7 @@ import abstraction.eqXRomu.general.Variable;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
 
-public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
+public class Distributeur1Acteur implements IActeur, IDistributeurChocolatDeMarque {
 	
 	protected Journal journal0;/** @author Ewen Landron */
 	protected Journal journal1;/** @author Alexandre Cornet */
@@ -30,9 +30,11 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 	protected HashMap<IProduit, Double> Prix;/** @author Alexandre Cornet */
 	protected double TailleRayon;/** @author Alexandre Cornet */
 	protected double volumerayon;/** @author Alexandre Cornet */
+	protected HashMap<ChocolatDeMarque, Double> ChocolatsAchetes;/** @author Lucas Levillain */
 	/**
          * @author Alexandre Cornet
 		 * @author Ewen Landron
+		 * @author Lucas Levillain
          */ 
 	public Distributeur1Acteur() {
 		this.journal0 = new Journal("Journal EQ8 étapes ", this);
@@ -45,6 +47,7 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 		this.Rayon = new HashMap<IProduit, Double>(); 
 		this.Stock = new HashMap<IProduit, Double>();
 		this.Prix = new HashMap<IProduit, Double>();
+		this.ChocolatsAchetes = new HashMap<ChocolatDeMarque, Double>();
 		this.TailleRayon = 1000.0;
 		this.volumerayon = 0.0;
 	}
@@ -226,12 +229,14 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 
 		double coutStockage = 0.0;
 		double coutMiseEnRayon = 0.0;
+		double coutStockageParTonne = 120.0;
+		double coutMiseEnRayonParTonne = 0.0
 
 		List<ChocolatDeMarque> p = Filiere.LA_FILIERE.getChocolatsProduits();
 		for (int i = 0; i < p.size(); i++) {
 			IProduit prod = (IProduit) p.get(i);
-			coutStockage += getQuantiteEnStock(prod, this.cryptogramme) * this.coutStockageParTonne;
-			coutMiseEnRayon += getQuantiteEnRayon(prod, this.cryptogramme) * this.coutMiseEnRayonParTonne;
+			coutStockage += getQuantiteEnStock(prod, this.cryptogramme) * coutStockageParTonne;
+			coutMiseEnRayon += getQuantiteEnRayon(prod, this.cryptogramme) * coutMiseEnRayonParTonne;
 		}
 
 		couts.put("stockage", coutStockage);
@@ -300,9 +305,8 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 	/** @author Alexandre Cornet */
 	public double getPrixProduit(IProduit p, int cryptogramme) {
 		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
-
 			/** @author Lucas Levillain */ 
-			//this.Prix.get(p).put((IProduit)(p), (CoutParArticle.getOrDefault() + prixDAchat.getOrDefault())*1,1);	
+			this.Prix(p).put(IProduit)(p, value : (CoutParArticle.getOrDefault() + prixDAchat.getOrDefault())*1,1)	
 			return this.Prix.get(p);
 		} else {
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
