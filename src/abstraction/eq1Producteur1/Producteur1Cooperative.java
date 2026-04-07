@@ -12,11 +12,11 @@ public class Producteur1Cooperative extends Producteur1Planteur{
     HashMap<String, Double> coopEq = new HashMap<>();
 
     public Producteur1Cooperative(){
-        this.coopEq.put("salaire adulte",2.);
+        this.coopEq.put("salaire adultes",2.);
         this.coopEq.put("taille",this.getTaillePlantation(true));
 
 
-        this.coopNonEq.put("salaire adulte",0.5);
+        this.coopNonEq.put("salaire adultes",0.5);
         this.coopNonEq.put("salaire enfants",0.2);
         this.coopNonEq.put("taille",this.getTaillePlantation(false));
 
@@ -32,12 +32,12 @@ public class Producteur1Cooperative extends Producteur1Planteur{
 
     public double getSalaireAdulte(boolean equitable){
         if (equitable) {
-            return this.coopEq.get("salaire adulte");
+            return this.coopEq.get("salaire adultes");
             
         }
 
         else{
-            return this.coopNonEq.get("salaire adulte");
+            return this.coopNonEq.get("salaire adultes");
         }
     }
 
@@ -57,28 +57,32 @@ public class Producteur1Cooperative extends Producteur1Planteur{
     }
 
     public double getSalaireEnfant(){
-        return this.coopEq.get("salaire enfant");
+        return this.coopEq.get("salaire enfants");
     }
 
     public void payerSalaire(){
-        double montant = this.coopEq.get("nombre adultes")* this.coopEq.get("salaire adulte") + this.coopNonEq.get("nombre adultes")*this.coopNonEq.get("nombre adultes") +this.coopEq.get("salaire enfant")*this.coopEq.get("nombre enfant");
+
+        double montant = this.coopEq.get("nombre adultes")* this.coopEq.get("salaire adultes")
+         + this.coopNonEq.get("nombre adultes")*this.coopNonEq.get("salaire adultes") 
+         +this.coopNonEq.get("salaire enfants")*this.coopNonEq.get("nombre enfants");
+
         Banque banque=Filiere.LA_FILIERE.getBanque();
-        banque.payerCout(this, this.cryptogramme, "Masse salariale" , 15 * montant);
+        banque.payerCout(this, this.cryptogramme, "Masse salariales" , 15 * montant);
         this.journal.ajouter("Salaire payé : " + montant);
     }
 
 
     public void setSalaire(boolean adulte, boolean equitable, double salaire){
         if(equitable){
-            this.coopEq.put("salaire adulte", salaire);
+            this.coopEq.put("salaire adultes", salaire);
         }
 
         else if(adulte){
-            this.coopNonEq.put("salaire adulte", salaire);
+            this.coopNonEq.put("salaire adultes", salaire);
         }
 
         else{
-            this.coopNonEq.put("salaire enfant", salaire);
+            this.coopNonEq.put("salaire enfants", salaire);
         }
     }
 
