@@ -75,29 +75,7 @@ public class Transformateur3Acteur implements IActeur {
 
 		int etape = Filiere.LA_FILIERE.getEtape();
 		journal.ajouter("Étape " + etape);
-/* 
-		journal.ajouter("=== État des stocks ===");
-		for (Feve f : this.stocks.getStockFeves().keySet()) {
-			double q = this.stocks.getStockFeves().get(f);
-			if (q > 0) {
-				journal.ajouter("Fèves " + f.getGamme() + " " + (f.isEquitable() ? "équitable" : "non équitable") + " : " + q + " kg");
-			}
-		}
-		for (Chocolat c : this.stocks.getStockChoco().keySet()) {
-			double q = this.stocks.getStockChoco().get(c);
-			if (q > 0) {
-				journal.ajouter("Chocolat " + c.getGamme() + " " + (c.isEquitable() ? "équitable" : "non équitable") + " : " + q + " kg");
-			}
-		}
-		for (ChocolatDeMarque cm : this.stocks.getStockChocoMarque().keySet()) {
-			double q = this.stocks.getStockChocoMarque().get(cm);
-			if (q > 0) {
-				journal.ajouter("Chocolat de marque " + cm.getMarque() + " : " + q + " kg");
-			}
-		}
-		journal.ajouter("Volume total de stock : " + this.stocks.getTotalStockVolume().getValeur() + " kg");
-
-*/
+		
 
 	}
 
