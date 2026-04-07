@@ -19,7 +19,7 @@ import abstraction.eqXRomu.produits.IProduit;
 
 /**@author Simon */
 
-public class Producteur2Bourse extends Producteur2VenteCC implements IVendeurBourse{
+public class Producteur2Bourse extends Producteur2Acteur{
 
 	private Journal journalBourse;
 	
@@ -32,29 +32,25 @@ public class Producteur2Bourse extends Producteur2VenteCC implements IVendeurBou
 	}
 
 	public double offre(Feve f, double cours) {
-		SetStockMin(0.1);
+		this.stockManager.setStockMin(0.1);
 
 		double offre = 0;
 
-		if (stockvar.containsKey(f) && cout_unit_t.containsKey(f) && seuil_stock.containsKey(f)) {
+		if (this.stockvar.containsKey(f) && this.stockManager.cout_unit_t.containsKey(f) && this.stockManager.seuil_stock.containsKey(f)) {
 			
-			double stock_a = stockvar.get(f).getValeur();
-			double a_garder = restantDu(f);
+			double stockActuel = this.stockvar.get(f).getValeur();
+			double quantiteAGarder = this.restantDu(f);
 			
 			// Calcul du prix minimal voulu : marge de 20% (x1.2) par défaut
 			double marge = 1.2;
-			// Si la fève est équitable/bio, on applique une marge de 30% (x1.3) selon votre stratégie
-			if (f.isEquitable() || f.isBio()) {
-				marge = 1.3;
-			}
 			
-			double prixMinimal = cout_unit_t.get(f) * marge;
+			double prixMinimal = this.stockManager.cout_unit_t.get(f) * marge;
 
-			journalBourse.ajouter("Valeur du cours de la feve " + f + " : " + cours + "\nValeur du prix minimal voulu : " + prixMinimal);
+			this.journalBourse.ajouter("Valeur du cours de la feve " + f + " : " + cours + "\nValeur du prix minimal voulu : " + prixMinimal);
 
-			if ((stock_a - a_garder > seuil_stock.get(f)) && (prixMinimal < cours)) {
-				offre = stock_a - a_garder - seuil_stock.get(f);
-				journalBourse.ajouter(Filiere.LA_FILIERE.getEtape() + " Je mets en vente " + offre + " T de " + f);
+			if ((stockActuel - quantiteAGarder > this.stockManager.seuil_stock.get(f)) && (prixMinimal < cours)) {
+				offre = stockActuel - quantiteAGarder - this.stockManager.seuil_stock.get(f);
+				this.journalBourse.ajouter(Filiere.LA_FILIERE.getEtape() + " Je mets en vente " + offre + " T de " + f);
 			}
 		}
 
