@@ -69,6 +69,17 @@ public class Transformateur2Acteur implements IActeur {
 		for (int i = 0; i < 9; i++){
 			this.Journaux.get(i).ajouter("Etape : "+ Integer.toString((Filiere.LA_FILIERE.getEtape()))+ "\n");
 		}
+		if achat enchere bien
+		if achat bourse bien
+		if stock feve ok vente enchere
+		if vente AO on propose
+		
+		// Vision plus long terme pour faire baisser les prix
+
+		if CC feve
+		if CC chococlat
+
+		faire du stock de choco
 	}
 
 	public Color getColor() {// NE PAS MODIFIER
