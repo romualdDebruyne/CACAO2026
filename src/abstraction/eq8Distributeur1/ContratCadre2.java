@@ -1,6 +1,5 @@
 package abstraction.eq8Distributeur1;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
 
@@ -26,7 +25,6 @@ public class ContratCadre2 extends Approvisionnement2 implements IAcheteurContra
 
     public ContratCadre2() {
         super();
-        this.mesContrats = new ArrayList<>();
         this.lancement_CC = false;
     }
 
@@ -57,17 +55,25 @@ public class ContratCadre2 extends Approvisionnement2 implements IAcheteurContra
 
         SuperviseurVentesContratCadre sup = (SuperviseurVentesContratCadre) (Filiere.LA_FILIERE.getActeur("Sup.CCadre"));
         List<IVendeurContratCadre> vendeurs = sup.getVendeurs(cdm);
-    
+
         if (vendeurs.size() > 0) {
             // Échéancier de 12 étapes
             Echeancier ech = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 12, besoinParEtape);
-        
+    
             ExemplaireContratCadre c = sup.demandeAcheteur(this, vendeurs.get(0), cdm, ech, this.cryptogramme, false);
-        
+    
             if (c != null) {
                 this.mesContrats.add(c);
-                // ACTION CRUCIALE : On informe le système de la hausse du stock prédit
+            
+                // 1. Mise à jour du stock prédit (flux physique)
                 this.actualiserStockPredit(c);
+            
+                // 2. Mise à jour du prix d'achat (flux financier)
+                // On mémorise le prix unitaire obtenu pour affiner les prochaines négociations
+                this.prixDAchat.put(cdm, c.getPrix());
+            
+                // Petit ajout pour le suivi
+                this.journal5.ajouter(Color.CYAN, Color.BLACK, "Prix d'achat actualisé pour " + cdm + " : " + c.getPrix());
             }
         }
     }

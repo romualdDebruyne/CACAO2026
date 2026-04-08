@@ -23,7 +23,7 @@ public class Distributeur1 extends MiseEnRayon {
 		Banque b=Filiere.LA_FILIERE.getBanque();
 		Variable v=this.getvolumestock();
 		double v1=v.getValeur();
-		double volumeCibleTotal = 1000.0;
+		double volumeCibleTotal = 3600000.0;
 
 		// On remet tout les produits du rayon en stock pour simplifier les calculs
 		for (int i = 0; i < p.size(); i++) {
@@ -34,6 +34,9 @@ public class Distributeur1 extends MiseEnRayon {
         }
 		//Choix de l'acteur
 		this.trierChocolatsParPrix();
+		if (Filiere.LA_FILIERE.getEtape() == 1) {
+			this.initialiserPrixReference();
+		}
 		this.lancerApprovisionnementGeneral(volumeCibleTotal);
 		this.executerMiseEnRayon();
 
