@@ -22,7 +22,6 @@ public class Producteur2Stock {
     protected double cout_stockage = 7.5;
 
     public Producteur2Stock() {
-        super();
         this.stock = new HashMap<Feve, HashMap<Integer, Double>>();
         this.stock_initial = new HashMap<Feve, Double>();
         this.stockvar = new HashMap<Feve, Variable>();
@@ -60,7 +59,6 @@ public class Producteur2Stock {
 
 
     public void next() {
-        super.next();
         setStockMin(0.1);
         prodParStep();
         TaxeStockage();
