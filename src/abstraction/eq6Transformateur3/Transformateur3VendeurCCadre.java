@@ -1,19 +1,37 @@
 package abstraction.eq6Transformateur3;
 
+import java.util.List;
+
 import abstraction.eqXRomu.contratsCadres.Echeancier;
 import abstraction.eqXRomu.contratsCadres.ExemplaireContratCadre;
 import abstraction.eqXRomu.contratsCadres.IVendeurContratCadre;
+import abstraction.eqXRomu.general.Journal;
 import abstraction.eqXRomu.produits.Chocolat;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
 
-public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre implements IVendeurContratCadre{
+//@author: Le Clezio Brevael
 
+public class Transformateur3VendeurCCadre extends Transformateur3AcheteurCCadre implements IVendeurContratCadre{
+    protected Journal journalVente;
+
+public Transformateur3VendeurCCadre() {
+    super(); // très important
+
+    this.journalVente = new Journal("Journal Vente CC EQ6", this);
+}
 
 public boolean vend(IProduit produit) {
     return produit == Chocolat.C_MQ_E || produit == Chocolat.C_HQ_E || this.stockchocomarque.containsKey(produit);
 }
 
+
+
+public List<Journal> getJournaux() {
+    List<Journal> res = super.getJournaux();
+    res.add(this.journalVente);
+    return res;
+}
 
 public double totalEngagement(IProduit produit) {
     double total = 0.0;
@@ -95,4 +113,7 @@ public double livrer(IProduit produit, double quantite, ExemplaireContratCadre c
         return 0.0;
     }
 }
+
+
+
 }
