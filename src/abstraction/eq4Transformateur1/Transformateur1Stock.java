@@ -16,7 +16,11 @@ import abstraction.eqXRomu.produits.ChocolatDeMarque;
 public class Transformateur1Stock extends Transformateur1Acteur implements IFabricantChocolatDeMarque, IMarqueChocolat{
 
     private HashMap<IProduit, Double> stock;
-    public ChocolatDeMarque ProntellaM= new ChocolatDeMarque(Chocolat.C_MQ, "ProntellaM", 65);
+    public ChocolatDeMarque ProntellaM= new ChocolatDeMarque(Chocolat.C_MQ, "Prontella", 65);
+    public ChocolatDeMarque ProntellaB= new ChocolatDeMarque(Chocolat.C_BQ, "Prontella", 50);
+    public ChocolatDeMarque ProntellaH= new ChocolatDeMarque(Chocolat.C_HQ, "Prontella", 65);
+    public ChocolatDeMarque ProntellaBE= new ChocolatDeMarque(Chocolat.C_BQ_E, "Prontella", 50);
+    public ChocolatDeMarque ProntellaHE= new ChocolatDeMarque(Chocolat.C_HQ_E, "Prontella", 65);
 
     public Transformateur1Stock(){
         super();
@@ -25,11 +29,16 @@ public class Transformateur1Stock extends Transformateur1Acteur implements IFabr
     public List<ChocolatDeMarque> getChocolatsProduits(){
 		List<ChocolatDeMarque> ListeChoco=new ArrayList<ChocolatDeMarque>();
 		ListeChoco.add(ProntellaM);
+		ListeChoco.add(ProntellaB);
+		ListeChoco.add(ProntellaH);
+		ListeChoco.add(ProntellaBE);
+		ListeChoco.add(ProntellaHE);
+        
 		return ListeChoco;
 	}
 	public List<String> getMarquesChocolat(){
 		List<String> ListeNoms= new ArrayList<String>();
-		ListeNoms.add("ProntellaM");
+		ListeNoms.add("Prontella");
 		return ListeNoms;
 	}
     public void initialiser(){
@@ -46,6 +55,11 @@ public class Transformateur1Stock extends Transformateur1Acteur implements IFabr
         this.stock.put(Chocolat.C_MQ_E,0.0);
         this.stock.put(Chocolat.C_HQ_E,0.0);
         this.stock.put(ProntellaM,0.0);
+        this.stock.put(ProntellaB,0.0);
+        this.stock.put(ProntellaH,0.0);
+        this.stock.put(ProntellaBE,0.0);
+        this.stock.put(ProntellaHE,0.0);
+
 
     }
 
@@ -107,10 +121,26 @@ public class Transformateur1Stock extends Transformateur1Acteur implements IFabr
     public void next(){
         super.next();
         
-
+        double F_BQ_ATransfo= this.getStocksProduit(Feve.F_BQ);
+        double F_BQ_E_ATransfo= this.getStocksProduit(Feve.F_BQ_E);
         double F_MQ_ATransfo= this.getStocksProduit(Feve.F_MQ);
-        double ChocoObtenu= F_MQ_ATransfo/0.65;
+        double F_HQ_ATransfo= this.getStocksProduit(Feve.F_HQ);
+        double F_HQ_E_ATransfo= this.getStocksProduit(Feve.F_HQ_E);
+        double ChocoBObtenu= F_BQ_ATransfo/0.50;
+        double ChocoBEObtenu= F_BQ_E_ATransfo/0.50;
+        double ChocoMObtenu= F_MQ_ATransfo/0.65;
+        double ChocoHObtenu= F_HQ_ATransfo/0.65;
+        double ChocoHEObtenu= F_HQ_E_ATransfo/0.65;
+
+        this.setStocksProduit(Feve.F_BQ, this.getStocksProduit(Feve.F_BQ)-F_BQ_ATransfo);
+        this.setStocksProduit(ProntellaB, this.getStocksProduit(ProntellaB)+ChocoBObtenu);
+        this.setStocksProduit(Feve.F_BQ_E, this.getStocksProduit(Feve.F_BQ_E)-F_BQ_E_ATransfo);
+        this.setStocksProduit(ProntellaBE, this.getStocksProduit(ProntellaBE)+ChocoBEObtenu);
         this.setStocksProduit(Feve.F_MQ, this.getStocksProduit(Feve.F_MQ)-F_MQ_ATransfo);
-        this.setStocksProduit(ProntellaM, this.getStocksProduit(ProntellaM)+ChocoObtenu);
+        this.setStocksProduit(ProntellaM, this.getStocksProduit(ProntellaM)+ChocoMObtenu);
+        this.setStocksProduit(Feve.F_HQ, this.getStocksProduit(Feve.F_HQ)-F_HQ_ATransfo);
+        this.setStocksProduit(ProntellaH, this.getStocksProduit(ProntellaH)+ChocoHObtenu);
+        this.setStocksProduit(Feve.F_HQ_E, this.getStocksProduit(Feve.F_HQ_E)-F_HQ_E_ATransfo);
+        this.setStocksProduit(ProntellaHE, this.getStocksProduit(ProntellaHE)+ChocoHEObtenu);
     }
 }
