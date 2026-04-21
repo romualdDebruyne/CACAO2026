@@ -43,7 +43,7 @@ public class ContratCadre2 extends Approvisionnement2 implements IAcheteurContra
             this.prixMaxCourant = this.prixCibleCourant * 1.5;
             
             // On définit un besoin par défaut (10 tonnes par défaut)
-            this.besoinCourant = 10.0; 
+            this.besoinCourant = 10000.0; 
         }
     }
 
