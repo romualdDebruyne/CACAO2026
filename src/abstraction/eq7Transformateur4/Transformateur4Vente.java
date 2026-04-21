@@ -11,37 +11,38 @@ public class Transformateur4Vente extends Transformateur4Production implements I
     @Override
     public boolean vend(IProduit produit) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'vend'");
+        return true;
     }
 
     @Override
     public Echeancier contrePropositionDuVendeur(ExemplaireContratCadre contrat) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contrePropositionDuVendeur'");
+        Echeancier echeance= new Echeancier(0);
+        return echeance;
     }
 
     @Override
     public double propositionPrix(ExemplaireContratCadre contrat) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'propositionPrix'");
+        return 0.;
     }
 
     @Override
     public double contrePropositionPrixVendeur(ExemplaireContratCadre contrat) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contrePropositionPrixVendeur'");
+        return 0.;
     }
 
     @Override
     public void notificationNouveauContratCadre(ExemplaireContratCadre contrat) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'notificationNouveauContratCadre'");
+        //TODO Auto-generated method stub
+    
     }
 
     @Override
     public double livrer(IProduit produit, double quantite, ExemplaireContratCadre contrat) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'livrer'");
+        return 0.;
     }
     
 }
