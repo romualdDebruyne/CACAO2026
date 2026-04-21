@@ -46,23 +46,30 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
 
     @Override
     public void next() {
-        super.next();
+        int etape = Filiere.LA_FILIERE.getEtape();
+        this.journal.ajouter("=== ETAPE " + etape + " ===");
 
-        // Ajouter l'appel pour initier des propositions CC
-        this.fairePropositionCC();
+        List<ChocolatDeMarque> produits = Filiere.LA_FILIERE.getChocolatsProduits();
 
-        List<ExemplaireContratCadre> aRetirer = new LinkedList<ExemplaireContratCadre>();
-        for (ExemplaireContratCadre contrat : this.contratsEnCours) {
-            if (contrat.getQuantiteRestantALivrer() <= 0.0) {
-                aRetirer.add(contrat);
-                this.contratsTermines.add(contrat);
-        this.journal.ajouter("Contrat terminé : " + contrat.getProduit());
+        if (produits != null && !produits.isEmpty()) {
+            for (ChocolatDeMarque choco : produits) {
+                double quantiteActuelle = this.stock.getOrDefault(choco, 0.0);
+                double seuilMin = 10000.0;  // 10 tonnes : seuil déclenchant réappro
+                double stockCible = 50000.0; // 50 tonnes : stock visé
+
+                // On ne réapprovisionne que si on est en dessous du seuil
+                if (quantiteActuelle < seuilMin) {
+                    double ajout = stockCible - quantiteActuelle;
+                    this.stock.put(choco, quantiteActuelle + ajout);
+                    journal.ajouter("Réapprovisionnement " + choco.getNom() 
+                        + " : +" + (ajout/1000) + "t (stock était " 
+                        + (quantiteActuelle/1000) + "t)");
+                }
             }
         }
-        this.contratsEnCours.removeAll(aRetirer);
 
-        this.evaluerFideliteContrats();
-        this.journal.ajouter("Contrats en cours : " + this.contratsEnCours.size());
+        this.indicateurStockTotal.setValeur(this, getStockTotal());
+        journal.ajouter("Stock total : " + (getStockTotal()/1000) + " tonnes");
     }
 
 
