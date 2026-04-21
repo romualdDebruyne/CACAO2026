@@ -57,14 +57,6 @@ public class Transformateur2VendeurCC extends Transformateur2AchatCC implements 
 		if (produit instanceof ChocolatDeMarque){ 
 			ChocolatDeMarque cdm = (ChocolatDeMarque) produit;
 			Chocolat c = cdm.getChocolat();
-			Feve F;
-			if (c == Chocolat.C_BQ){
-				F = Feve.F_BQ;
-			} else if (c == Chocolat.C_MQ) {
-				F = Feve.F_MQ;
-			} else {
-				F = Feve.F_HQ;
-			}
             
             double stockDispo = this.getStock_chocolatDeMarque(cdm); // On regarde le bon stock
 			
@@ -72,7 +64,7 @@ public class Transformateur2VendeurCC extends Transformateur2AchatCC implements 
 				this.remove_chocolatDeMarque(cdm, quantite);
 				return quantite;
 			} else {
-				this.ProductionChocolat(F,0.45,quantite - stockDispo);
+				this.ProductionChocolat(c, quantite - stockDispo);
 			    this.remove_chocolatDeMarque(cdm, stockDispo);
 			    return stockDispo; // Correction : on ne peut renvoyer que ce qu'on livre vraiment
 			}

@@ -21,7 +21,21 @@ public class Transformateur2ProductionChocolat extends Transformateur2Production
     @Override
     public void next() {
         super.next();
-        ProductionFerraraBQ(5000.0);
+        ProductionChocolat(Chocolat.C_BQ, 2000.0);
+        ProductionChocolat(Chocolat.C_MQ, 1500.0);
+        ProductionChocolat(Chocolat.C_HQ, 500.0);
+    }
+
+    public void ProductionChocolat(Chocolat c,Double n){
+        if(c==Chocolat.C_HQ){
+            ProductionFerraraHQ(n);
+        }
+        else if(c==Chocolat.C_MQ){
+            ProductionFerraraMQ(n);
+        }
+        else if(c==Chocolat.C_BQ){
+            ProductionFerraraBQ(n);
+        }
     }
 
 
