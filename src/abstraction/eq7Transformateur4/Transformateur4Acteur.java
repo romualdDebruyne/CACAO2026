@@ -153,6 +153,18 @@ public class Transformateur4Acteur implements IActeur {
 		return Filiere.LA_FILIERE;
 	}
 
+	public Variable get_StockChoco_HQ(){
+		return this.StockChoco_HQ;
+	}
+
+	public Variable get_StockChoco_MQ(){
+		return this.StockChoco_MQ;
+	}
+
+	public Variable get_StockChoco_BQ(){
+		return this.StockChoco_BQ;
+	}
+
 	public double getQuantiteEnStock(IProduit p, int cryptogramme) {
 		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
 			return 0; // A modifier
