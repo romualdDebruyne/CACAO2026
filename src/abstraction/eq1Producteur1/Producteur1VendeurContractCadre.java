@@ -131,22 +131,20 @@ public class Producteur1VendeurContractCadre extends Producteur1VendeurAuxEncher
 
 		double quantiteTot = 0;
 
-		if(null == f){
-                    return;
-                }
-
-		else switch (f) {
-                case F_BQ ->                     {
-                        quantiteTot = 255000;
-                    }
-                case F_MQ ->                     {
-                        quantiteTot = 45000;
-
-                    }
-                default -> {
-                    return;
-                    }
-            }
+		if (null == f) {
+			return;
+		} else {
+			switch (f) {
+				case F_BQ:
+					quantiteTot = 255000;
+					break;
+				case F_MQ:
+					quantiteTot = 45000;
+					break;
+				default:
+					return;
+			}
+		}
 
 		double pourcent = (quantiteTot/this.getStock(f))*100;
 		this.pourcentageAVendre.put(f,pourcent + this.pourcentageAVendre.get(f));
