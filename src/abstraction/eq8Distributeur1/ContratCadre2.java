@@ -155,6 +155,8 @@ public class ContratCadre2 extends Approvisionnement implements IAcheteurContrat
         this.Stock.put(p, stockActuel + quantiteEnTonnes);
         this.journal5.ajouter("Réception de " + quantiteEnTonnes + "T de " + p);
         Banque b=Filiere.LA_FILIERE.getBanque();
-        b.payerCout(this, cryptogramme, "Paiement contrat cadre", contrat.getPaiementAEffectuerAuStep());
+        if (contrat.getPaiementAEffectuerAuStep() > 0) {
+            b.payerCout(this, cryptogramme, "Paiement contrat cadre", contrat.getPaiementAEffectuerAuStep());
+        }
     }
 }
