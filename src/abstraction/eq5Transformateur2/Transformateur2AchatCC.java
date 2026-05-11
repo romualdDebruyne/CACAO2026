@@ -149,11 +149,24 @@ public class Transformateur2AchatCC extends Transformateur2VendeurAuxEncheres im
     public void next() {
         super.next();
 
+        // --- NOUVEAU : LE FREIN D'URGENCE (Limite globale 600 000 T) ---
+        // On calcule d'abord combien de place on prend déjà avec nos fèves
+        double stockFevesTotal = this.getStock_feve(Feve.F_HQ) + this.getStock_feve(Feve.F_MQ) + this.getStock_feve(Feve.F_BQ);
+        
+        // (Il faudrait idéalement ajouter ici votre stock de chocolat total si vous avez la méthode)
+        // double stockChocoTotal = ...
+        
+        // Si nos entrepôts sont déjà dangereusement pleins (ex: plus de 500 000 T), on gèle les achats !
+        if (stockFevesTotal > 650000.0) {
+            return; // On arrête la méthode next() ici, on n'achète rien ce tour-ci !
+        }
+        // ---------------------------------------------------------------
+
         // 1. Définition des besoins cibles en fèves (pour couvrir vos 100k de choco)
         HashMap<Feve, Double> ciblesFeves = new HashMap<>();
-        ciblesFeves.put(Feve.F_HQ, 49000.0);
-        ciblesFeves.put(Feve.F_MQ, 77000.0);
-        ciblesFeves.put(Feve.F_BQ, 119000.0);
+        ciblesFeves.put(Feve.F_HQ, 98000.0);
+        ciblesFeves.put(Feve.F_MQ, 154000.0);
+        ciblesFeves.put(Feve.F_BQ, 238000.0);
 
         for (Feve f : ciblesFeves.keySet()) {
             double stockActuel = this.getStock_feve(f);
@@ -161,11 +174,8 @@ public class Transformateur2AchatCC extends Transformateur2VendeurAuxEncheres im
             // 2. On calcule ce qui arrive déjà par NOS contrats cadres en cours
             double attendu = 0;
             
-            // Boucle sur notre propre registre interne
             for (ExemplaireContratCadre c : this.mesContratsEnCours) {
-                // On vérifie que le contrat nous concerne en tant qu'acheteur et que c'est la bonne fève
                 if (c.getAcheteur().equals(this) && c.getProduit().equals(f)) {
-                    // Utilisation de la méthode corrigée (sans 'e' à Restant)
                     attendu += c.getQuantiteRestantALivrer();
                 }
             }
@@ -178,14 +188,22 @@ public class Transformateur2AchatCC extends Transformateur2VendeurAuxEncheres im
                 List<IVendeurContratCadre> vendeurs = ((SuperviseurVentesContratCadre) Filiere.LA_FILIERE.getActeur("Sup.CCadre")).getVendeurs(f);
                 
                 if (!vendeurs.isEmpty()) {
-                    // On choisit un vendeur (ici le premier de la liste, pour simplifier)
-                    IVendeurContratCadre vendeur = vendeurs.get(0);
                     
-                    // On propose un contrat étalé sur 10 étapes pour lisser l'arrivée dans l'usine
-                    Echeancier echeancier = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 10, quantiteAManquer / 10);
-                    
-                    // On lance la demande officielle de négociation au Superviseur
-                    ((SuperviseurVentesContratCadre) Filiere.LA_FILIERE.getActeur("Sup.CCadre")).demandeAcheteur(this, vendeur, f, echeancier, cryptogramme, false);
+                    // --- NOUVEAU : LA RECHERCHE MULTI-VENDEURS ---
+                    // On essaie les vendeurs un par un. Si un contrat est signé, on s'arrête.
+                    for (IVendeurContratCadre vendeur : vendeurs) {
+                        
+                        Echeancier echeancier = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 10, quantiteAManquer / 10.0);
+                        
+                        // On stocke le résultat de la demande dans une variable
+                        ExemplaireContratCadre nouveauContrat = ((SuperviseurVentesContratCadre) Filiere.LA_FILIERE.getActeur("Sup.CCadre")).demandeAcheteur(this, vendeur, f, echeancier, cryptogramme, false);
+                        
+                        // Si le contrat a été accepté et signé (il n'est pas null)
+                        if (nouveauContrat != null) {
+                            break; // SUCCÈS ! On quitte la boucle des vendeurs, inutile de demander aux autres.
+                        }
+                    }
+                    // ---------------------------------------------
                 }
             }
         }

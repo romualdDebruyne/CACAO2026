@@ -40,32 +40,44 @@ public class Transformateur2VendeurCC extends Transformateur2AchatCC implements 
         ChocolatDeMarque choco = (ChocolatDeMarque) contrat.getProduit();
         Echeancier echeancier = contrat.getEcheancier();
         
-        double stockActuel = this.getStock_chocolatDeMarque(choco);
-        double quantiteDejaPromise = 0.0;
+        // NOTRE PLAFOND D'ENGAGEMENT (Doit être le même que dans next)
+        double PLAFOND_CC = 40000.0; 
         
+        double quantiteDejaPromise = 0.0;
         for (ExemplaireContratCadre c : this.mesContratsEnCours) {
             if (c.getVendeur().equals(this) && c.getProduit().equals(choco)) {
                 quantiteDejaPromise += c.getQuantiteRestantALivrer();
             }
         }
-        double stockVraimentDisponible = Math.max(0.0, stockActuel - quantiteDejaPromise);
-
-        int nbEcheancesPropose = Math.min(echeancier.getNbEcheances(), 5);
-        double capaciteFuture = nbEcheancesPropose * (500 * 8.4)*0.5;
         
-        double quantiteMaxPossible = stockVraimentDisponible;
+        // Ce qu'on est encore autorisé à signer
+        double espaceLibre = PLAFOND_CC - quantiteDejaPromise;
+
+        // Si le carnet de commandes est plein, on refuse
+        if (espaceLibre <= 0.0) {
+            return null;
+        }
 
         double quantiteDemandee = contrat.getQuantiteTotale();
         boolean modification = false;
 
-        if (quantiteDemandee > quantiteMaxPossible) {
-            quantiteDemandee = quantiteMaxPossible;
-            modification = true;
-        }
+        // 1. On bloque la durée à 5 tours maximum pour ne pas geler l'usine trop longtemps
+        int nbEcheancesPropose = Math.min(echeancier.getNbEcheances(), 5);
         if (echeancier.getNbEcheances() > 5) {
             modification = true;
         }
 
+        // 2. On rabote si l'acheteur demande plus que notre espace libre
+        if (quantiteDemandee > espaceLibre) {
+            quantiteDemandee = espaceLibre;
+            modification = true;
+        }
+
+        if (quantiteDemandee < 100.0) {
+            return null; // On ne s'embête pas pour moins de 100 Tonnes
+        }
+
+        // 3. On renvoie l'offre finale
         if (modification) { 
             int etapeDebut = echeancier.getStepDebut();
             Echeancier nouvelEcheancier = new Echeancier(etapeDebut); 
@@ -74,10 +86,8 @@ public class Transformateur2VendeurCC extends Transformateur2AchatCC implements 
                 nouvelEcheancier.ajouter(quantiteParEcheance);
             }
             return nouvelEcheancier;
-        } else if (!modification) {
-            return echeancier; 
         } else {
-            return null; 
+            return echeancier; 
         }
     }
 	
@@ -179,33 +189,39 @@ public class Transformateur2VendeurCC extends Transformateur2AchatCC implements 
         
         ChocolatDeMarque[] mesChocolats = {chocoHQ, chocoMQ, chocoBQ};
 
-        for (ChocolatDeMarque choco : mesChocolats) {
-            double stockActuel = this.getStock_chocolatDeMarque(choco);
+        // NOTRE PLAFOND D'ENGAGEMENT (ex: 150 000 Tonnes maximum promises en même temps par gamme)
+        double PLAFOND_CC = 40000.0; 
 
+        for (ChocolatDeMarque choco : mesChocolats) {
+            // On calcule tout ce qu'on doit déjà livrer pour ce chocolat
             double quantiteDejaPromise = 0.0;
-            
             for (ExemplaireContratCadre c : this.mesContratsEnCours) {
-                // On vérifie qu'on est bien le vendeur sur ce contrat et que c'est le bon chocolat
                 if (c.getVendeur().equals(this) && c.getProduit().equals(choco)) {
                     quantiteDejaPromise += c.getQuantiteRestantALivrer();
                 }
             }
 
-            double stockVraimentDisponible = stockActuel - quantiteDejaPromise;
+            // L'espace libre dans notre carnet de commandes
+            double espaceLibre = PLAFOND_CC - quantiteDejaPromise;
 
-            if (stockVraimentDisponible > 2000.0) {
+            // Si on a beaucoup de place (ex: plus de 10 000T de libre), on démarche !
+            if (espaceLibre > 5000.0) {
                 List<IAcheteurContratCadre> acheteurs = supCC.getAcheteurs(choco);
 
                 if (!acheteurs.isEmpty()) {
-                    IAcheteurContratCadre acheteur = acheteurs.get(0);
+                    IAcheteurContratCadre acheteur = acheteurs.get(0); // On pourrait rendre ça aléatoire
                     
-                    double quantiteAVendreParTour = (stockVraimentDisponible * 0.80) / 5;
-                    Echeancier echeancier = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 5, quantiteAVendreParTour);
+                    // On propose de remplir un tiers de notre espace libre, sur 5 tours
+                    double quantiteAProposer = espaceLibre / 3.0; 
+                    double quantiteParTour = quantiteAProposer / 5.0;
                     
+                    Echeancier echeancier = new Echeancier(Filiere.LA_FILIERE.getEtape() + 1, 5, quantiteParTour);
                     supCC.demandeVendeur(acheteur, this, choco, echeancier, cryptogramme, false);
                 }
             }
         }
-        this.mesContratsEnCours.removeIf(c -> c.getQuantiteRestantALivrer() == 0);
+        
+        // Nettoyage comptable
+        this.mesContratsEnCours.removeIf(c -> c.getQuantiteRestantALivrer() == 0 || c.getAcheteur().getNom().toLowerCase().contains("faillite"));
     }
 }

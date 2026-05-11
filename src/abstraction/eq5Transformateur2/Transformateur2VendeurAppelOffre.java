@@ -23,8 +23,9 @@ public class Transformateur2VendeurAppelOffre extends Transformateur2AchatAppelO
         }
         
         ChocolatDeMarque cdm = (ChocolatDeMarque) p;
-        
-        if (!cdm.getMarque().equals("Ferrara Rocher")) {
+        String marque = cdm.getMarque().toLowerCase();
+
+        if (!marque.contains("ferrara")) {
             return null;
         }
 
@@ -36,19 +37,18 @@ public class Transformateur2VendeurAppelOffre extends Transformateur2AchatAppelO
         double prixTonne;
         switch (cdm.getChocolat()) {
             case C_HQ: 
-                prixTonne = 8000.0;
+                prixTonne = 10000.0;
                 break;
             case C_MQ: 
-                prixTonne = 5000.0;
+                prixTonne = 2000.0;
                 break;
             case C_BQ: 
-                prixTonne = 3000.0;
+                prixTonne = 5000.0;
                 break;
             default:   
-                prixTonne = 2500.0;
+                prixTonne = 3000.0;
                 break;
         }
-
 
         return new OffreVente(offre, this, cdm, prixTonne);
     }
@@ -56,7 +56,7 @@ public class Transformateur2VendeurAppelOffre extends Transformateur2AchatAppelO
 	public void notifierVenteAO(OffreVente propositionRetenue){
         ChocolatDeMarque cdm = (ChocolatDeMarque) propositionRetenue.getProduit();
         this.remove_chocolatDeMarque(cdm, propositionRetenue.getQuantiteT());
-        this.getJournaux().get(8).ajouter(propositionRetenue.toString()+ "\n");
+        this.getJournaux().get(8).ajouter("Retenue de l'offre: "+propositionRetenue.toString()+ "\n");
     }
 
 	public void notifierPropositionNonRetenueAO(OffreVente propositionRefusee){
