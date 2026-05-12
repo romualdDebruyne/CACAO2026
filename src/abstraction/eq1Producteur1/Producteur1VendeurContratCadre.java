@@ -24,6 +24,7 @@ public class Producteur1VendeurContratCadre extends Producteur1Cooperative imple
 	protected int periode = 8 ;
 	protected HashMap<Feve , Double > prixTonne = new HashMap<Feve , Double>();
 	protected HashMap<Feve , Double > prixMinTonne = new HashMap<Feve , Double>();
+	protected Journal journallivraisonlCC
 
 
 
@@ -183,6 +184,7 @@ public class Producteur1VendeurContratCadre extends Producteur1Cooperative imple
         
         double vrai_quantite= Math.min(quantite,getStock((Feve)produit));
         this.takeFeve((Feve)produit, vrai_quantite);
+		this.journallivraisonlCC.ajouter("livraison de" + vrai_quantite + "tonnes de" + produit + "pour le contrat avec" + contrat.getAcheteur().getNom());
         return vrai_quantite;
     }
 
