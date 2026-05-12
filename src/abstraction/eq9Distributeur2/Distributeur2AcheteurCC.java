@@ -8,8 +8,8 @@ import abstraction.eqXRomu.contratsCadres.SuperviseurVentesContratCadre;
 import abstraction.eqXRomu.filiere.Filiere;
 import abstraction.eqXRomu.produits.ChocolatDeMarque;
 import abstraction.eqXRomu.produits.IProduit;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Paul Juhel
@@ -34,6 +34,7 @@ public class Distributeur2AcheteurCC extends Distributeur2AcheteurAO implements 
 
     @Override
     public void initialiser() {
+        super.initialiser();
         this.superviseurCC = (SuperviseurVentesContratCadre) Filiere.LA_FILIERE.getActeur("Sup.CCadre");
         this.journalCC.ajouter("Initialisation des CC");
     }
