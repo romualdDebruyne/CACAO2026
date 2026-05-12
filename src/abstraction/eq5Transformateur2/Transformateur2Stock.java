@@ -99,19 +99,19 @@ public class Transformateur2Stock extends Transformateur2Marque{
             SacDeFeves sac=new SacDeFeves(q,n,etape+6);
             this.sacsHQ.add(sac);
             }
-        if(q==Feve.F_HQ_E){
+        else if(q==Feve.F_HQ_E){
             SacDeFeves sac=new SacDeFeves(q,n,etape+6);
             this.sacsHQ_E.add(sac);
             }
-        if(q==Feve.F_MQ){
+        else if(q==Feve.F_MQ){
             SacDeFeves sac=new SacDeFeves(q,n,etape+12);
             this.sacsMQ.add(sac);
             }
-        if(q==Feve.F_MQ_E){
+        else if(q==Feve.F_MQ_E){
             SacDeFeves sac=new SacDeFeves(q,n,etape+12);
             this.sacsMQ_E.add(sac);
             }
-        if(q==Feve.F_BQ){
+        else if(q==Feve.F_BQ){
             SacDeFeves sac=new SacDeFeves(q,n,etape+24);
             this.sacsBQ.add(sac);
         }
@@ -137,7 +137,7 @@ public class Transformateur2Stock extends Transformateur2Marque{
             if(q == Feve.F_HQ){
                 Double resteAEnlever = n;
                 while (resteAEnlever > 0.001 && !this.sacsHQ.isEmpty()) {
-                    resteAEnlever = this.sacsHQ.get(0).remove_feve(resteAEnlever);
+                    resteAEnlever = this.sacsHQ.get(0).remove_feve_sac(resteAEnlever);
                     if(this.sacsHQ.get(0).getQuantite() <= 0.001){
                         this.sacsHQ.remove(0);
                     }
@@ -146,7 +146,7 @@ public class Transformateur2Stock extends Transformateur2Marque{
             if(q == Feve.F_HQ_E){
                 Double resteAEnlever = n;
                 while (resteAEnlever > 0.001 && !this.sacsHQ_E.isEmpty()) {
-                    resteAEnlever = this.sacsHQ_E.get(0).remove_feve(resteAEnlever);
+                    resteAEnlever = this.sacsHQ_E.get(0).remove_feve_sac(resteAEnlever);
                     if(this.sacsHQ_E.get(0).getQuantite() <= 0.001){
                         this.sacsHQ_E.remove(0);
                     }
@@ -155,7 +155,7 @@ public class Transformateur2Stock extends Transformateur2Marque{
             if(q == Feve.F_MQ){
                 Double resteAEnlever = n;
                 while (resteAEnlever > 0.001 && !this.sacsMQ.isEmpty()) {
-                    resteAEnlever = this.sacsMQ.get(0).remove_feve(resteAEnlever);
+                    resteAEnlever = this.sacsMQ.get(0).remove_feve_sac(resteAEnlever);
                     if(this.sacsMQ.get(0).getQuantite() <= 0.001){
                         this.sacsMQ.remove(0);
                     }
@@ -164,7 +164,7 @@ public class Transformateur2Stock extends Transformateur2Marque{
             if(q == Feve.F_MQ_E){
                 Double resteAEnlever = n;
                 while (resteAEnlever > 0.001 && !this.sacsMQ_E.isEmpty()) {
-                    resteAEnlever = this.sacsMQ_E.get(0).remove_feve(resteAEnlever);
+                    resteAEnlever = this.sacsMQ_E.get(0).remove_feve_sac(resteAEnlever);
                     if(this.sacsMQ_E.get(0).getQuantite() <= 0.001){
                         this.sacsMQ_E.remove(0);
                     }
@@ -173,7 +173,7 @@ public class Transformateur2Stock extends Transformateur2Marque{
             if(q == Feve.F_BQ){
                 Double resteAEnlever = n;
                 while (resteAEnlever > 0.001 && !this.sacsBQ.isEmpty()) {
-                    resteAEnlever = this.sacsBQ.get(0).remove_feve(resteAEnlever);
+                    resteAEnlever = this.sacsBQ.get(0).remove_feve_sac(resteAEnlever);
                     if(this.sacsBQ.get(0).getQuantite() <= 0.001){
                         this.sacsBQ.remove(0);
                     }
@@ -182,7 +182,7 @@ public class Transformateur2Stock extends Transformateur2Marque{
             else if (q == Feve.F_BQ_E) { // J'ai remplacé votre "else" par un "else if" plus explicite et sécurisé
                 Double resteAEnlever = n;
                 while (resteAEnlever > 0.001 && !this.sacsBQ_E.isEmpty()) {
-                    resteAEnlever = this.sacsBQ_E.get(0).remove_feve(resteAEnlever);
+                    resteAEnlever = this.sacsBQ_E.get(0).remove_feve_sac(resteAEnlever);
                     if(this.sacsBQ_E.get(0).getQuantite() <= 0.001){
                         this.sacsBQ_E.remove(0);
                     }
@@ -195,40 +195,40 @@ public class Transformateur2Stock extends Transformateur2Marque{
         **/
         public void update_peremption(){
             int etape = Filiere.LA_FILIERE.getEtape();
-            while(!this.sacsHQ.isEmpty() && this.sacsHQ.get(0).getDatePeremption()==etape){
+            while(!this.sacsHQ.isEmpty() && this.sacsHQ.get(0).getDatePeremption()<=etape){
                 SacDeFeves sac=this.sacsHQ.remove(0);
                 this.stock_feve.put(Feve.F_HQ, this.stock_feve.get(Feve.F_HQ) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_MQ, sac.getQuantite());
                 this.stock_feve.put(Feve.F_MQ, this.stock_feve.get(Feve.F_MQ) + sac.getQuantite());
                 this.sacsMQ.add(newSac);
             }
-            while(!this.sacsHQ_E.isEmpty() && this.sacsHQ_E.get(0).getDatePeremption()==etape){
+            while(!this.sacsHQ_E.isEmpty() && this.sacsHQ_E.get(0).getDatePeremption()<=etape){
                 SacDeFeves sac=this.sacsHQ_E.remove(0);
                 this.stock_feve.put(Feve.F_HQ_E, this.stock_feve.get(Feve.F_HQ_E) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_MQ_E, sac.getQuantite());
                 this.stock_feve.put(Feve.F_MQ_E, this.stock_feve.get(Feve.F_MQ_E) + sac.getQuantite());
                 this.sacsMQ_E.add(newSac);
             }
-            while(!this.sacsMQ.isEmpty() && this.sacsMQ.get(0).getDatePeremption()==etape){
+            while(!this.sacsMQ.isEmpty() && this.sacsMQ.get(0).getDatePeremption()<=etape){
                 SacDeFeves sac=this.sacsMQ.remove(0);
                 this.stock_feve.put(Feve.F_MQ, this.stock_feve.get(Feve.F_MQ) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_BQ, sac.getQuantite());
                 this.stock_feve.put(Feve.F_BQ, this.stock_feve.get(Feve.F_BQ) + sac.getQuantite());
                 this.sacsBQ.add(newSac);
             }
-            while(!this.sacsMQ_E.isEmpty() && this.sacsMQ_E.get(0).getDatePeremption()==etape){
+            while(!this.sacsMQ_E.isEmpty() && this.sacsMQ_E.get(0).getDatePeremption()<=etape){
                 SacDeFeves sac=this.sacsMQ_E.remove(0);
                 this.stock_feve.put(Feve.F_MQ_E, this.stock_feve.get(Feve.F_MQ_E) - sac.getQuantite());
                 SacDeFeves newSac=new SacDeFeves(Feve.F_BQ_E, sac.getQuantite());
                 this.stock_feve.put(Feve.F_BQ_E, this.stock_feve.get(Feve.F_BQ_E) + sac.getQuantite());
                 this.sacsBQ_E.add(newSac);
             }
-            while(!this.sacsBQ.isEmpty() && this.sacsBQ.get(0).getDatePeremption()==etape){
+            while(!this.sacsBQ.isEmpty() && this.sacsBQ.get(0).getDatePeremption()<=etape){
                 SacDeFeves sac=this.sacsBQ.remove(0);
                 this.stock_feve.put(Feve.F_BQ, this.stock_feve.get(Feve.F_BQ) - sac.getQuantite());
                 this.stock_feve_affichage.retirer(this, sac.getQuantite());
             }
-            while(!this.sacsBQ_E.isEmpty() && this.sacsBQ_E.get(0).getDatePeremption()==etape){
+            while(!this.sacsBQ_E.isEmpty() && this.sacsBQ_E.get(0).getDatePeremption()<=etape){
                 SacDeFeves sac=this.sacsBQ_E.remove(0);
                 this.stock_feve.put(Feve.F_BQ_E, this.stock_feve.get(Feve.F_BQ_E) - sac.getQuantite());
                 this.stock_feve_affichage.retirer(this, sac.getQuantite());
@@ -268,7 +268,7 @@ public class Transformateur2Stock extends Transformateur2Marque{
     @Override
     public void next(){
         super.next();
-        this.update_peremption();
+        /*this.update_peremption();*/
         
         Double stockTotal= this.getStock_feve_total();
         for (Object key : this.stock_ChocolatDeMarque.keySet()) {
