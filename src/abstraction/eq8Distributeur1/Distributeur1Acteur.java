@@ -350,7 +350,7 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 	/** @author Alexandre Cornet */
 	public double getQuantiteEnRayonTG(IProduit p, int cryptogramme) {
 		if (this.cryptogramme==cryptogramme) { // c'est donc bien un acteur assermente qui demande a consulter la quantite en stock
-			return this.RayonTG.get(p);
+			return this.RayonTG.getOrDefault(p, 0.0);
 		} else {
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock
 		}
@@ -394,7 +394,7 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 	/** @author Alexandre Cornet */
 	@Override
 	public double quantiteEnVenteTG(ChocolatDeMarque choco, int crypto) {
-		return getQuantiteEnRayonTG((IProduit)(choco), crypto);
+		return getQuantiteEnRayonTG(choco, crypto);
 		
 	}
 	/** @author Alexandre Cornet */
