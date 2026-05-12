@@ -142,7 +142,6 @@ public class Plantation {
 
     /**
      * Met à jour l'étape de mort si la plantation vient de mourir
-     * @param etapeActuelle L'étape actuelle de la filière
      */
     public void mettreAJourEtatMort(int etapeActuelle) {
         if (estMorte() && etapeMort == -1) {
@@ -152,8 +151,6 @@ public class Plantation {
 
     /**
      * Vérifie si la plantation doit être vendue (morte depuis trop longtemps sans replantation)
-     * @param etapeActuelle L'étape actuelle de la filière
-     * @return true si la plantation doit être vendue
      */
     public boolean doitEtreVendue(int etapeActuelle) {
         return etapeMort != -1 && (etapeActuelle - etapeMort) >= delaiAvantVente;
@@ -244,7 +241,7 @@ public class Plantation {
     public double get_prix_vente() {
         return prix_vente;
     }
-
+/** @author Thomas */
     // ========== Méthodes pour la certification équitable ==========
     
     /**
