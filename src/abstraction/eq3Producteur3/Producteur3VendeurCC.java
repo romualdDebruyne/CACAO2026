@@ -34,7 +34,6 @@ public class Producteur3VendeurCC extends Producteur3VendeurBourse implements IV
     }
 
     public void next() {
-        // FIX 2 : purge des contrats terminés EN PREMIER, avant toute logique
         List<ExemplaireContratCadre> termines = new LinkedList<ExemplaireContratCadre>();
         for (ExemplaireContratCadre c : contratsEnCours) {
             if (c.getQuantiteRestantALivrer() == 0.0 && c.getMontantRestantARegler() == 0.0) {
@@ -105,7 +104,14 @@ public class Producteur3VendeurCC extends Producteur3VendeurBourse implements IV
 
         this.journalCC.ajouter("--- Contrats en cours (step " + Filiere.LA_FILIERE.getEtape() + ") ---");
         for (ExemplaireContratCadre cc : this.contratsEnCours) {
-            this.journalCC.ajouter(cc.toString());
+            this.journalCC.ajouter(
+            "Contrat #" + cc.getNumero()
+            + " | " + cc.getProduit()
+            + " | " + cc.getAcheteur().getNom()
+            + " | signé step " + cc.getEcheancier().getStepDebut()
+            + " | " + cc.getQuantiteRestantALivrer() + "t restantes / " + cc.getEcheancier().getQuantiteTotale() + "t total"
+            + " | prix " + cc.getPrix() + "€/t"
+        );
         }
         this.journalCC.ajouter("--------------------------------------");
     }
