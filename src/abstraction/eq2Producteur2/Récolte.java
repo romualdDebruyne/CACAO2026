@@ -136,6 +136,38 @@ public class Récolte extends Producteur2Acteur {
     }
 
     public void action_replante() {
+        int etapeActuelle = Filiere.LA_FILIERE.getEtape();
+        
+        // D'abord mettre à jour l'état de mort de toutes les plantations
+        for (Plantation p : plantations) {
+            p.mettreAJourEtatMort(etapeActuelle);
+        }
+        
+        // Gérer la vente des plantations mortes depuis trop longtemps
+        List<Plantation> plantationsAVendre = new ArrayList<>();
+        for (Plantation p : plantations) {
+            if (p.doitEtreVendue(etapeActuelle)) {
+                plantationsAVendre.add(p);
+            }
+        }
+        
+        // Vendre les plantations identifiées
+        for (Plantation p : plantationsAVendre) {
+            double prixVente = p.calculerPrixVente();
+            // Créditer le compte bancaire avec le prix de vente
+            Filiere.LA_FILIERE.getBanque().virer(null, this.cryptogramme, this, prixVente);
+            
+            // Logs détaillés
+            int tempsDecede = etapeActuelle - p.getEtapeMort();
+            JournalBanque.ajouter(etapeActuelle + " : Vente de " + p.getParcelles() + " parcelles " + p.getTypeFeve() 
+                    + " pour " + prixVente + " € (morte depuis " + tempsDecede + " étapes)");
+            Journalterrains.ajouter(etapeActuelle + " : VENTE DE PARCELLES - " + p.getParcelles() + " parcelles " 
+                    + p.getTypeFeve() + " au prix unitaire " + p.getprix_vente() + " €/parcelle (délai atteint: " 
+                    + tempsDecede + "/" + p.getDelaiAvantVente() + " étapes)");
+            plantations.remove(p);
+        }
+        
+        // Ensuite gérer la replantation pour les plantations restantes
         for (Plantation p : plantations) {
             // Récupérer le stock actuel de la fève de cette gamme
             double stockFeve = stockvar.get(p.getTypeFeve()).getValeur();
@@ -143,11 +175,11 @@ public class Récolte extends Producteur2Acteur {
             if (p.Replante(stockFeve)) {
                 // Replantation réussie (stock <= stock_max et arbre mort)
                 Journalterrains.ajouter(
-                        Filiere.LA_FILIERE.getEtape() + " : Replantation de " + p.getParcelles() + " parcelles de "
+                        etapeActuelle + " : Replantation de " + p.getParcelles() + " parcelles de "
                                 + p.getTypeFeve() + " (stock: " + stockFeve + " t, max: " + p.getStock_max() + " t)");
             } else if (p.estMorte() && stockFeve > p.getStock_max()) {
                 // Arbre mort mais stock trop élevé : pas de replantation
-                Journalterrains.ajouter(Filiere.LA_FILIERE.getEtape() + " : Pas de replantation de " + p.getTypeFeve()
+                Journalterrains.ajouter(etapeActuelle + " : Pas de replantation de " + p.getTypeFeve()
                         + " car le stock (" + stockFeve + " t) dépasse le seuil maximum (" + p.getStock_max() + " t)");
             }
         }
