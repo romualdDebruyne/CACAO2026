@@ -17,7 +17,7 @@ import abstraction.eqXRomu.produits.IProduit;
 public class Approvisionnement extends Distributeur1Acteur {
 
     protected Map<ChocolatDeMarque, Double> prixDAchat;
-    private Map<ChocolatDeMarque, Double> stockPredit;
+    protected Map<ChocolatDeMarque, Double> stockPredit;
     private Map<String, List<ChocolatDeMarque>> classements;
     protected List<ExemplaireContratCadre> mesContrats;
     protected double pourcentBQ, pourcentBQ_E, pourcentMQ, pourcentMQ_E, pourcentHQ, pourcentHQ_E;
@@ -112,7 +112,6 @@ public class Approvisionnement extends Distributeur1Acteur {
     }
 
     public void lancerApprovisionnementGeneral(double volumeCibleTotal) {
-        this.stockPredit = initialiserStockPredit();
 
         // Calcul des cibles pour les 6 catégories
         acheterParCategorie(Gamme.BQ, false, volumeCibleTotal * this.pourcentBQ);
@@ -198,12 +197,12 @@ public class Approvisionnement extends Distributeur1Acteur {
      * Correction : Création d'une nouvelle Map pour le stock prédit afin d'éviter
      * de modifier le stock réel pendant les simulations de calcul.
      */
-    private Map<ChocolatDeMarque, Double> initialiserStockPredit() {
+    protected Map<ChocolatDeMarque, Double> initialiserStockPredit() {
         Map<ChocolatDeMarque, Double> predit = new HashMap<>();
         this.ChocolatsAchetes = new HashMap<>(); 
         this.stockPreditTG = new HashMap<>(); // Initialisation du dictionnaire TG
         
-        int etapeActuelle = Filiere.LA_FILIERE.getEtape();
+        int etapeActuelle = Filiere.LA_FILIERE.getEtape() + 1;
 
         // 1. Initialisation à 0 pour tous les chocolats de la filière
         for (ChocolatDeMarque cdm : Filiere.LA_FILIERE.getChocolatsProduits()) {
