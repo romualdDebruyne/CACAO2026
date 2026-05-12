@@ -32,6 +32,7 @@ public class Transformateur1AcheteurAppelDOffre extends Transformateur1VendeurAp
 				if (ov!=null) { // on a retenu l'une des offres de vente
 					journalAO.ajouter("   AO finalise : on ajoute "+quantite+" T de "+f+" au stock");
 					this.getStock().put(f, this.getStock().get(f)+quantite);
+					this.addPeremption(quantite, this.getChoco(f));
 				}
 			}
 		}
@@ -45,12 +46,26 @@ public class Transformateur1AcheteurAppelDOffre extends Transformateur1VendeurAp
 	public OffreVente choisirOV(List<OffreVente> propositions) {
 		BourseCacao bourse = (BourseCacao)(Filiere.LA_FILIERE.getActeur("BourseCacao"));
 		for (OffreVente ov : propositions) {
-			
+		if (ov.getProduit() instanceof Feve && ov.getProduit()!=Feve.F_MQ_E && ov.getProduit()!=Feve.F_HQ_E && ov.getProduit()!=Feve.F_BQ_E) {
 		double cours = ( bourse.getCours((Feve)ov.getProduit())).getValeur();
 		if (ov.getPrixT()<=0.9*cours) {
 			return ov;
 		}
 		}
+		else if (ov.getProduit().equals(Feve.F_BQ_E)) {
+				double cours = ( bourse.getCours(Feve.F_BQ)).getValeur(); {
+				if (ov.getPrixT()<=0.95*cours) {
+					return ov;
+				}
+			}
+		}
+		else if (ov.getProduit().equals(Feve.F_HQ_E)) {
+			double cours = ( bourse.getCours(Feve.F_HQ)).getValeur(); {
+			if (ov.getPrixT()<=0.95*cours) {
+				return ov;
+			}
+		}
+	}}
 		return null;
 	}
 
