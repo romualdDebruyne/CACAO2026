@@ -64,23 +64,33 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 		List<ChocolatDeMarque> p=Filiere.LA_FILIERE.getChocolatsProduits();
 		ChocolatDeMarque C_MQ_ProntellaM = p.get(0);
 		this.Prix.put(C_MQ_ProntellaM, 14000.0);
-		ChocolatDeMarque C_HQ_Ferrara = p.get(1);
+		ChocolatDeMarque C_BQ_Prontella = p.get(1);
+		this.Prix.put(C_BQ_Prontella, 22000.0);
+		ChocolatDeMarque C_HQ_Prontella = p.get(2);
+		this.Prix.put(C_HQ_Prontella, 27000.0);
+		ChocolatDeMarque C_BQ_E_Prontella = p.get(3);
+		this.Prix.put(C_BQ_E_Prontella, 25000.0);
+		ChocolatDeMarque C_HQ_E_Prontella = p.get(4);
+		this.Prix.put(C_HQ_E_Prontella, 30000.0);
+		ChocolatDeMarque C_HQ_Ferrara = p.get(5);
 		this.Prix.put(C_HQ_Ferrara, 27000.0);
-		ChocolatDeMarque C_MQ_Ferrara = p.get(2);
+		ChocolatDeMarque C_MQ_Ferrara = p.get(6);
 		this.Prix.put(C_MQ_Ferrara, 14000.0);
-		ChocolatDeMarque C_BQ_Ferrara = p.get(3);
+		ChocolatDeMarque C_BQ_Ferrara = p.get(7);
 		this.Prix.put(C_BQ_Ferrara, 22000.0);
-		ChocolatDeMarque C_HQ_E_Villors = p.get(4);
+		ChocolatDeMarque C_MQ_LamborghiniduCacao = p.get(8);
+		this.Prix.put(C_MQ_LamborghiniduCacao, 14000.0);
+		ChocolatDeMarque C_HQ_E_Villors = p.get(9);
 		this.Prix.put(C_HQ_E_Villors, 30000.0);
-		ChocolatDeMarque C_HQ_Villors = p.get(5);
+		ChocolatDeMarque C_HQ_Villors = p.get(10);
 		this.Prix.put(C_HQ_Villors, 27000.0);
-		ChocolatDeMarque C_MQ_E_Villors = p.get(6);
+		ChocolatDeMarque C_MQ_E_Villors = p.get(11);
 		this.Prix.put(C_MQ_E_Villors, 14000.0);
-		ChocolatDeMarque C_MQ_Villors = p.get(7);
+		ChocolatDeMarque C_MQ_Villors = p.get(12);
 		this.Prix.put(C_MQ_Villors, 14000.0);
-		ChocolatDeMarque C_BQ_E_Villors = p.get(8);
+		ChocolatDeMarque C_BQ_E_Villors = p.get(13);
 		this.Prix.put(C_BQ_E_Villors, 25000.0);
-		ChocolatDeMarque C_BQ_Villors = p.get(9);
+		ChocolatDeMarque C_BQ_Villors = p.get(14);
 		this.Prix.put(C_BQ_Villors, 22000.0);
 
 		for (int i=0; i<p.size(); i++){
@@ -316,7 +326,7 @@ public class Distributeur1Acteur implements IDistributeurChocolatDeMarque {
 			/** @author Lucas Levillain */
 			
 			//this.Prix.put(p, (CoutParArticle + prixDAchat.getOrDefault(p, 1000.0)) * 1.1);
-			this.Prix.put(p, 8000.0);
+			//this.Prix.put(p, 8000.0);
 			return this.Prix.get(p);
 		} else {
 			return 0; // Les acteurs non assermentes n'ont pas a connaitre notre stock

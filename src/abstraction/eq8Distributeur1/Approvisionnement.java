@@ -40,9 +40,9 @@ public class Approvisionnement extends Distributeur1Acteur {
         this.pourcentBQ = 0.15;   // 15% Bas de gamme standard
         this.pourcentBQ_E = 0.05; // 5%  Bas de gamme équitable
         this.pourcentMQ = 0.35;   // 35% Milieu de gamme standard
-        this.pourcentMQ_E = 0.10; // 10% Milieu de gamme équitable
+        this.pourcentMQ_E = 0.15; // 15% Milieu de gamme équitable
         this.pourcentHQ = 0.20;   // 20% Haut de gamme standard
-        this.pourcentHQ_E = 0.15; // 15% Haut de gamme équitable
+        this.pourcentHQ_E = 0.10; // 10% Haut de gamme équitable
     }
 
     /**
