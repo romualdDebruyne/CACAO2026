@@ -209,7 +209,7 @@ public class Transformateur2VendeurCC extends Transformateur2AchatCC implements 
 
         for (ChocolatDeMarque choco : mesChocolats) {
             // Ce qu'on est encore autorisé à signer
-        // --- LE VERROU DE SÉCURITÉ RÉEL ---
+            // --- LE VERROU DE SÉCURITÉ RÉEL ---
             // 1. Chocolat physique déjà en stock
             double chocoDispo = this.getStock_chocolatDeMarque(choco);
             
