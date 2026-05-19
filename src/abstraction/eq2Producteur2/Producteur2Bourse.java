@@ -66,15 +66,15 @@ public class Producteur2Bourse extends Sechage implements IVendeurBourse {
             } else if (stockTotalGlobal > 300000.0) {
                 marge = 1.00; // ALERTE: on vend à prix coûtant
                 this.journalBourse.ajouter("Alerte Stock pour " + f + " (> 300k T). Marge baissée à 1.00");
-            } else if ((f == Feve.F_HQ || f == Feve.F_HQ_E) && ageMax >= 18) {
-                marge = 0.90; // Péremption imminente (dégrade à 24)
-                this.journalBourse.ajouter("⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 18). Marge baissée à 0.90");
-            } else if (f == Feve.F_MQ && ageMax >= 40) {
-                marge = 0.85; // Péremption imminente (dégrade à 48)
-                this.journalBourse.ajouter("⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 40). Marge baissée à 0.85");
-            } else if (f == Feve.F_BQ && ageMax >= 80) {
-                marge = 0.80; // Péremption imminente (pourrit à 96)
-                this.journalBourse.ajouter("⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 80). Marge baissée à 0.80");
+            } else if ((f == Feve.F_HQ || f == Feve.F_HQ_E) && ageMax >= 9) {
+                marge = 0.90; // Péremption imminente (dégrade à 12)
+                this.journalBourse.ajouter("⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 9). Marge baissée à 0.90");
+            } else if (f == Feve.F_MQ && ageMax >= 20) {
+                marge = 0.85; // Péremption imminente (dégrade à 24)
+                this.journalBourse.ajouter("⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 20). Marge baissée à 0.85");
+            } else if (f == Feve.F_BQ && ageMax >= 40) {
+                marge = 0.80; // Péremption imminente (pourrit à 48)
+                this.journalBourse.ajouter("⚠️ PANIC SELL (ÂGE) pour " + f + " (Âge = " + ageMax + " > 40). Marge baissée à 0.80");
             }
 
             double prixMinimal = this.cout_unit_t.get(f) * marge;

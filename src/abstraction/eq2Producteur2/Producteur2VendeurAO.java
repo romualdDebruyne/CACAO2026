@@ -39,11 +39,11 @@ public class Producteur2VendeurAO extends Producteur2VendeurCC implements IVende
             double marge = f.isEquitable() ? 1.20 : 1.05;
             
             int ageMax = this.getAgeAnciennete(f);
-            if ((f == Feve.F_HQ || f == Feve.F_HQ_E) && ageMax >= 18) {
+            if ((f == Feve.F_HQ || f == Feve.F_HQ_E) && ageMax >= 9) {
                 marge -= 0.25; // Baisse forte de la marge
-            } else if (f == Feve.F_MQ && ageMax >= 40) {
+            } else if (f == Feve.F_MQ && ageMax >= 20) {
                 marge -= 0.20;
-            } else if (f == Feve.F_BQ && ageMax >= 80) {
+            } else if (f == Feve.F_BQ && ageMax >= 40) {
                 marge -= 0.25;
             }
 

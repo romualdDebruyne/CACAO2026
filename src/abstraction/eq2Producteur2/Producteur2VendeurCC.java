@@ -180,11 +180,11 @@ public class Producteur2VendeurCC extends Producteur2Bourse implements IVendeurC
         int ageMax = this.getAgeAnciennete(feve);
         double multiplicateurAge = 1.0;
         
-        if ((feve == Feve.F_HQ || feve == Feve.F_HQ_E) && ageMax >= 18) {
+        if ((feve == Feve.F_HQ || feve == Feve.F_HQ_E) && ageMax >= 8) {
             multiplicateurAge = 0.90;
-        } else if (feve == Feve.F_MQ && ageMax >= 36) {
+        } else if (feve == Feve.F_MQ && ageMax >= 18) {
             multiplicateurAge = 0.85;
-        } else if (feve == Feve.F_BQ && ageMax >= 72) {
+        } else if (feve == Feve.F_BQ && ageMax >= 36) {
             multiplicateurAge = 0.80;
         }
 
